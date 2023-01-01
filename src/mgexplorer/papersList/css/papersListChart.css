@@ -1,0 +1,26 @@
+@CHARSET "UTF-8";
+
+.container {
+    min-height: 350px;
+    height: 350px;
+    min-width: 350px;
+    overflow: scroll;
+}
+
+.PL-title {
+    fill: black;
+    font-family: Arial, serif;
+    font-weight: bold;
+    /* cursor: pointer; */
+}
+
+.PL-icon {
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.PL-container {
+    height: 100%;
+    width: 100%;
+    overflow: scroll;
+}

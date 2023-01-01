@@ -1,0 +1,1518 @@
+{
+"queries": [
+  {
+    "query": "SELECT ?s ?o ?p ?date ?label ?type WHERE {\n\t?p dc:creator ?s, ?o ;\n   \t\tdcterms:title ?label ;\n   \t   \tdcterms:issued ?date ;\n\t\ta ?type .\n\t?p dcterms:abstract [rdf:value ?abs] .\n\tfilter regex(?abs, \"coronavirus\")\n\tfilter (?s != ?o)\n}\nlimit 1000\n                        \n                        ",
+    "name": "Co-authorship within publications about coronaviruses",
+    "uri": "https://covidontheweb.inria.fr/sparql",
+    "params": {
+      "type": 1,
+      "period": [
+        2000,
+        2020
+      ],
+      "prefixes": [
+        "PREFIX foaf: <http://xmlns.com/foaf/0.1/>",
+        "PREFIX pro: <http://purl.org/spar/pro/>",
+        "PREFIX bibo: <http://purl.org/ontology/bibo/>",
+        "PREFIX dcterms: <http://purl.org/dc/terms/>",
+        "PREFIX  xsd: <http://www.w3.org/2001/XMLSchema#>",
+        "PREFIX dc: <http://purl.org/dc/elements/1.1/>"
+      ]
+    },
+    "isLocked": true,
+    "id": 1603206446025,
+    "dataset": "covid"
+  },
+  {
+    "query": "                                                                                                                                                                                                                                 # wdt:P279 = subclass of\n# wdt:P31 = instance of\n# wd:Q12078 = cancer\n# wd:Q3286546 = respiratory disease\n\nselect distinct ?p  ?s  ?o ?label ?authorList\nfrom named <http://ns.inria.fr/covid19/graph/entityfishing>\nfrom named <http://ns.inria.fr/covid19/graph/articles>\nfrom named <http://ns.inria.fr/covid19/graph/wikidata-named-entities-full>\nwhere {\n    # Look for 2 annotations of the same article with Wikidata URIs ?dis1 and ?dis2\n    graph <http://ns.inria.fr/covid19/graph/entityfishing> {\n        ?annot1 schema:about ?p; oa:hasBody ?dis1.\n        ?annot2 schema:about ?p; oa:hasBody ?dis2.\n        filter (?annot1 != ?annot2)\n    }\n    graph <http://ns.inria.fr/covid19/graph/articles> {\n        ?p dct:title ?label.\n\n        {select ?p (group_concat(?name ; separator=\"--\") as ?authorList)\n            \twhere {\n\t\t\t?p dce:creator ?name\n\t\t}\n         \tgroup by ?p\n\t}\n    }\n\n    graph <http://ns.inria.fr/covid19/graph/wikidata-named-entities-full> {\n        { ?dis1 rdfs:label ?s. filter (?dis1 = $term1) } # ?dis1 is wd:Q12078\n        UNION\n        { ?dis1 wdt:P279 $term1; rdfs:label ?s. }        # ?dis1 is a subclass of wd:Q12078 (at any depth)\n        UNION\n        { ?dis1 wdt:P31 $term1; rdfs:label ?s. }         # ?dis1 is an instance or a subclass of wd:Q12078\n\n        { ?dis2 rdfs:label ?o. filter (?dis2 = $term2) }\n        UNION\n        { ?dis2 wdt:P279 $term2; rdfs:label ?o. }\n        UNION\n        { ?dis2 wdt:P31 $term2; rdfs:label ?o. }\n    }\n\n}\nlimit 1000\n\t                           \n                        \n                        \n                        \n                        \n                        \n                        \n                        \n                        \n                        ",
+    "name": "Looking for papers about cancer and respiratory disease.",
+    "uri": "https://covidontheweb.inria.fr/sparql",
+    "params": {
+      "type": 1,
+      "period": [
+        2000,
+        2020
+      ],
+      "variables": [
+        "wd:Q12078",
+        "wd:Q3286546"
+      ],
+      "prefixes": [
+        "PREFIX wd: <http://www.wikidata.org/entity/>",
+        "PREFIX wdt: <http://www.wikidata.org/prop/direct/>"
+      ]
+    },
+    "stylesheetActive": true,
+    "stylesheet": {
+      "appli": {
+        "name": "covid",
+        "debug": true
+      },
+      "node": {
+        "default": {
+          "color": "steelblue"
+        },
+        "mix": {
+          "color": "yellow"
+        },
+        "member": {
+          "color": "purple"
+        },
+        "other": {
+          "color": "green"
+        },
+        "fst": {
+          "color": "lightgreen",
+          "priority": 1
+        },
+        "snd": {
+          "color": "orange",
+          "priority": 2
+        },
+        "rst": {
+          "color": "purple",
+          "priority": 3
+        }
+      },
+      "edge": {
+        "color": "green"
+      },
+      "services": [
+        {
+          "label": "ACTA",
+          "url": "http://134.59.134.234:8081/analyseddocs?id="
+        },
+        {
+          "label": "Browser Corese",
+          "url": "http://corese.inria.fr/srv/service/covid?uri="
+        }
+      ]
+    },
+    "isPublished": true,
+    "isLocked": true,
+    "id": 1603268245738,
+    "dataset": "covid"
+  },
+  {
+    "query": "                                                                                                                                                                                                    # wdt:P279 = subclass of\n# wdt:P31 = instance of\n# wd:Q12078 = cancer\n# wd:Q1134583 = coronavirus family\n\nselect distinct ?p ?s ?o ?label ?pmid ?authorList\nfrom <http://ns.inria.fr/covid19/graph/entityfishing>\nfrom <http://ns.inria.fr/covid19/graph/articles>\nfrom named <http://ns.inria.fr/covid19/graph/wikidata-named-entities-full>\nwhere {\n\t# Look for 2 annotations of the same article with Wikidata URIs ?dis1 and ?dis2\n\t?annot1 schema:about ?p; oa:hasBody ?dis1.\n\t?annot2 schema:about ?p; oa:hasBody ?dis2.\n\t?p dct:title ?label ;\n\tbibo:pmid ?pmid .\n\t\n\tgraph <http://ns.inria.fr/covid19/graph/wikidata-named-entities-full> {\n        \t{ ?dis1 rdfs:label ?s. filter (?dis1 = $term1) } # ?dis1 is wd:Q12078\n\t        UNION\n        \t{ ?dis1 wdt:P279 wd:Q12078; rdfs:label ?s. }        # ?dis1 is subclass of wd:Q12078\n\t        UNION\n        \t{ ?dis1 wdt:P31 wd:Q12078; rdfs:label ?s. }         # ?dis1 is instance or subclass of wd:Q12078\n\n\t        { ?dis2 rdfs:label ?o. filter (?dis2 = $term2) }\n        \tUNION\n\t        { ?dis2 wdt:P279 wd:Q1134583; rdfs:label ?o. }\n    \t}\n    \t{select ?p (group_concat(?name ; separator=\"--\") as ?authorList)\n\twhere {\n\t\t?p dce:creator ?name\n\t}\n     \tgroup by ?p\n\t}\n}\nlimit 1000\n\t                           \n                        \n                        \n                        \n                        \n                        \n                        \n                        ",
+    "name": "Looking for papers about cancer and coronavirus.",
+    "uri": "https://covidontheweb.inria.fr/sparql",
+    "params": {
+      "type": 1,
+      "period": [
+        2000,
+        2020
+      ],
+      "variables": [
+        "wd:Q12078",
+        "wd:Q1134583"
+      ],
+      "prefixes": [
+        "PREFIX wd: <http://www.wikidata.org/entity/>",
+        "PREFIX wdt: <http://www.wikidata.org/prop/direct/>",
+        "PREFIX bibo: <http://purl.org/ontology/bibo/>"
+      ]
+    },
+    "stylesheetActive": true,
+    "stylesheet": {
+      "appli": {
+        "name": "covid",
+        "debug": true
+      },
+      "node": {
+        "default": {
+          "color": "steelblue"
+        },
+        "mix": {
+          "color": "yellow"
+        },
+        "member": {
+          "color": "purple"
+        },
+        "other": {
+          "color": "green"
+        },
+        "fst": {
+          "color": "lightgreen",
+          "priority": 1
+        },
+        "snd": {
+          "color": "orange",
+          "priority": 2
+        },
+        "rst": {
+          "color": "purple",
+          "priority": 3
+        }
+      },
+      "edge": {
+        "color": "green"
+      },
+      "acta": {
+        "url": "http://134.59.134.234:8081/analyseddocs?id="
+      },
+      "browser": {
+        "url": "http://corese.inria.fr/srv/service/covid?uri="
+      }
+    },
+    "isPublished": true,
+    "isLocked": true,
+    "id": 1603270693095,
+    "dataset": "covid"
+  },
+  {
+    "query": "SELECT ?s ?o ?p ?date ?label WHERE {\n\t?annot schema:about ?p ; \n\t\tdcterms:subject ?sub . \n\tfilter (?sub in (\"Medicine\", \"Biology\"))\n    \t?p dcterms:title ?label ;\n\t    \tdcterms:issued ?date ;\n    \t\tdc:creator ?s, ?o .\n    \tfilter contains(?label, \"coronavirus\")\n\tfilter (?date >= \"$beginYear-01-01\"^^xsd:date)\n\tfilter (?date <= \"$endYear-12-31\"^^xsd:date)\n\tfilter (?s < ?o)\n}\nlimit 1000\n                    ",
+    "name": "Co-authorship within Medicine and Biology fields regarding publications about coronavirus",
+    "uri": "https://covidontheweb.inria.fr/sparql",
+    "params": {
+      "type": 1,
+      "period": [
+        2000,
+        2020
+      ],
+      "prefixes": [
+        "PREFIX dcterms: <http://purl.org/dc/terms/>",
+        "PREFIX dc: <http://purl.org/dc/elements/1.1/>",
+        "PREFIX pro: <http://purl.org/spar/pro/>",
+        "PREFIX schema: <http://schema.org/>",
+        "PREFIX foaf: <http://xmlns.com/foaf/0.1/>"
+      ]
+    },
+    "isLocked": true,
+    "id": 1603273841249,
+    "dataset": "covid"
+  },
+  {
+    "query": "SELECT ?p (group_concat(distinct ?name ; separator = '--') as ?author) (sample(?d) as ?date) (sample(?t) as ?label)\nWHERE {\n\tselect * where {\n    \t\t?p dcterms:title ?t ;\n\t\t\tdcterms:issued ?d ;\n\t\t\tdc:creator ?name .\n\tfilter contains(?t, \"coronavirus\")\n\tfilter (?d >= \"$beginYear-01-01\"^^xsd:date)\n\tfilter (?d <= \"$endYear-12-31\"^^xsd:date)\n\t}\n\tlimit 1000\n}\ngroup by ?p\n                    \n                        ",
+    "name": "Co-authorship within publications about coronavirus",
+    "uri": "https://covidontheweb.inria.fr/sparql",
+    "params": {
+      "type": 1,
+      "period": [
+        2015,
+        2020
+      ],
+      "prefixes": [
+        "PREFIX pro: <http://purl.org/spar/pro/>",
+        "PREFIX foaf: <http://xmlns.com/foaf/0.1/>",
+        "PREFIX dcterms: <http://purl.org/dc/terms/>",
+        "PREFIX dc: <http://purl.org/dc/elements/1.1/>",
+        "PREFIX schema: <http://schema.org/>"
+      ]
+    },
+    "isLocked": true,
+    "id": 1603274613776,
+    "dataset": "covid"
+  },
+  {
+    "query": "# wdt:P279 = subclass of\n# wdt:P31 = instance of\n# wd:Q12078 = cancer\n# wd:Q3286546 = respiratory disease\n\nselect distinct ?type ?p ?s ?o ?label ?date ?authorList\nfrom named <http://ns.inria.fr/covid19/graph/entityfishing>\nfrom named <http://ns.inria.fr/covid19/graph/articles>\nfrom named <http://ns.inria.fr/covid19/graph/wikidata-named-entities-full>\nwhere {\n\tgraph <http://ns.inria.fr/covid19/graph/entityfishing> {\n\t\t?annot1 schema:about ?p; oa:hasBody ?dis1.\n\t\t?annot2 schema:about ?p; oa:hasBody ?dis2.\n\t\tfilter (?annot1 != ?annot2)\n\t}\n\tgraph <http://ns.inria.fr/covid19/graph/articles> {\n        \t?p dct:title ?label ; \n\t\t\ta ?type ;\n\t\t\tdct:issued ?date .\n\n        \t{select ?p (group_concat(?name ; separator=\"--\") as ?authorList)\n            \twhere {\n\t\t\t?p dce:creator ?name\n\t\t}\n            \tgroup by ?p\n\t\t}\n\t}\n\n \tgraph <http://ns.inria.fr/covid19/graph/wikidata-named-entities-full> {\n\t\t{ ?dis1 rdfs:label ?s. filter (?dis1 = $term1) } # ?dis1 is wd:Q12078\n\t\tUNION\n\t\t{ ?dis1 wdt:P279 $term1; rdfs:label ?s. }        # ?dis1 is a subclass of wd:Q12078 (at any depth)\n        \tUNION\n\t        { ?dis1 wdt:P31 $term1; rdfs:label ?s. }         # ?dis1 is an instance or a subclass of wd:Q12078\n\n        \t{ ?dis2 rdfs:label ?o. filter (?dis2 = $term2) }\n\t        UNION\n\t        { ?dis2 wdt:P279 $term2; rdfs:label ?o. }\n        \tUNION\n\t        { ?dis2 wdt:P31 $term2; rdfs:label ?o. }\n\t}\n}\nlimit 1000\n\t                           \n                        \n                        \n                        \n                        \n                        \n                        \n                        \n                        \n                        ",
+    "name": "Papers about cancer and respiratory disease (per type).",
+    "uri": "https://covidontheweb.inria.fr/sparql",
+    "params": {
+      "type": 1,
+      "period": [
+        2000,
+        2020
+      ],
+      "variables": [
+        "wd:Q12078",
+        "wd:Q3286546"
+      ],
+      "prefixes": [
+        "PREFIX wd: <http://www.wikidata.org/entity/>",
+        "PREFIX wdt: <http://www.wikidata.org/prop/direct/>"
+      ]
+    },
+    "isPublished": false,
+    "isLocked": true,
+    "id": 1613056906242,
+    "dataset": "covid"
+  },
+  {
+    "query": "SELECT ?s ?o ?p ?date ?label ?type WHERE {\n\t?p dcterms:title ?label ;\n\t\tdcterms:issued ?date ; \n\t\ta ?type ;\n\t\tdc:creator ?s, ?o\n\tfilter contains(?label, \"coronavirus\")\n\tfilter (?date >= \"$beginYear-01-01\"^^xsd:date)\n\tfilter (?date <= \"$endYear-12-31\"^^xsd:date)\n\tfilter (?s < ?o)\n}\nlimit 1000\n                    ",
+    "name": "Co-authorship in publications about coronavirus (per type)",
+    "uri": "https://covidontheweb.inria.fr/sparql",
+    "params": {
+      "type": 1,
+      "period": [
+        2000,
+        2020
+      ],
+      "prefixes": [
+        "PREFIX pro: <http://purl.org/spar/pro/>",
+        "PREFIX foaf: <http://xmlns.com/foaf/0.1/>",
+        "PREFIX dcterms: <http://purl.org/dc/terms/>",
+        "PREFIX dc: <http://purl.org/dc/elements/1.1/>",
+        "PREFIX schema: <http://schema.org/>"
+      ]
+    },
+    "isPublished": false,
+    "isLocked": true,
+    "id": 1613062812572,
+    "dataset": "covid"
+  },
+  {
+    "query": "SELECT ?p (group_concat(distinct ?name ; separator = '--') as ?author) (sample(?d) as ?date) (sample(?t) as ?label) (sample(?sub) as ?type) WHERE {\n\tselect * where {\n\t\t?p dcterms:title ?t ;\n\t\t\tdcterms:issued ?d ;\n\t\t\tdc:creator ?name .\n\t\tfilter contains(?t, \"coronavirus\")\n    \n\t\tgraph <http://ns.inria.fr/covid19/graph/entityfishing> {\n\t\t\t?a1 a oa:Annotation;\n\t\t\t\tschema:about ?p ;\n\t\t\t\toa:hasBody ?annot .\n\t\t}\n\n\t\t?annot rdfs:label ?sub .\n\t\tFILTER (langMatches( lang(?sub), \"en\" ) )\n\t} limit 10000\n} group by ?p\n",
+    "name": "Co-authorship (doc subject as attribute)",
+    "uri": "https://covidontheweb.inria.fr/sparql",
+    "params": {
+      "type": 1,
+      "period": [
+        2000,
+        2021
+      ],
+      "prefixes": [
+        "PREFIX pro: <http://purl.org/spar/pro/>",
+        "PREFIX foaf: <http://xmlns.com/foaf/0.1/>",
+        "PREFIX dcterms: <http://purl.org/dc/terms/>",
+        "PREFIX dc: <http://purl.org/dc/elements/1.1/>",
+        "PREFIX schema: <http://schema.org/>"
+      ]
+    },
+    "isPublished": false,
+    "isLocked": true,
+    "id": 1613141561306,
+    "dataset": "covid"
+  },
+  {
+    "query": "                                                                                                                                                                                                    # wdt:P279 = subclass of\n# wdt:P31 = instance of\n# wd:Q12078 = cancer\n# wd:Q1134583 = coronavirus family\n\nselect distinct ?p ?s ?o ?label ?authorList ?style1 ?style2 \nfrom <http://ns.inria.fr/covid19/graph/entityfishing>\nfrom <http://ns.inria.fr/covid19/graph/articles>\nfrom named <http://ns.inria.fr/covid19/graph/wikidata-named-entities-full>\nwhere {\n\t?annot1 schema:about ?p; oa:hasBody ?dis1.\n\t?annot2 schema:about ?p; oa:hasBody ?dis2.\n\t?p dct:title ?label ;\n\t\tdct:issued ?date ;\n\t\ta ?type .\n\tgraph <http://ns.inria.fr/covid19/graph/wikidata-named-entities-full> {\n        \t{ ?dis1 rdfs:label ?s. filter (?dis1 = $term1) } # ?dis1 is wd:Q12078\n        \tUNION\n\t        { ?dis1 wdt:P279 wd:Q12078; rdfs:label ?s. }        # ?dis1 is subclass of wd:Q12078\n        \tUNION\n\t        { ?dis1 wdt:P31 wd:Q12078; rdfs:label ?s. }         # ?dis1 is instance or subclass of wd:Q12078\n\n        \t{ ?dis2 rdfs:label ?o. filter (?dis2 = $term2) }\n\t        UNION\n        \t{ ?dis2 wdt:P279 wd:Q1134583; rdfs:label ?o. }\n    \t}\n    \t{select ?p (group_concat(?name ; separator=\"--\") as ?authorList)\n     \twhere {\n\t\t?p dce:creator ?name\n\t}\n     \tgroup by ?p\n\t}\n\n\tbind (\"fst\" as ?style1)\n\tbind (\"snd\" as ?style2)\n}\nlimit 1000\n\t                           \n                        \n                        \n                        \n                        \n                        \n                        \n                        ",
+    "name": "Papers about cancer and coronavirus (with stylesheet).",
+    "uri": "https://covidontheweb.inria.fr/sparql",
+    "params": {
+      "type": 1,
+      "period": [
+        2000,
+        2020
+      ],
+      "variables": [
+        "wd:Q12078",
+        "wd:Q1134583"
+      ],
+      "prefixes": [
+        "PREFIX wd: <http://www.wikidata.org/entity/>",
+        "PREFIX wdt: <http://www.wikidata.org/prop/direct/>"
+      ]
+    },
+    "stylesheetActive": true,
+    "stylesheet": {
+      "appli": {
+        "name": "covid",
+        "debug": true
+      },
+      "node": {
+        "default": {
+          "color": "steelblue"
+        },
+        "mix": {
+          "color": "yellow"
+        },
+        "member": {
+          "color": "purple"
+        },
+        "other": {
+          "color": "green"
+        },
+        "fst": {
+          "color": "green",
+          "priority": 1
+        },
+        "snd": {
+          "color": "orange",
+          "priority": 2
+        },
+        "rst": {
+          "color": "purple",
+          "priority": 3
+        }
+      },
+      "edge": {
+        "color": "green"
+      },
+      "services": [
+        {
+          "label": "ACTA",
+          "url": "http://134.59.134.234:8081/analyseddocs?id="
+        },
+        {
+          "label": "Browser Corese",
+          "url": "http://corese.inria.fr/srv/service/covid?uri="
+        }
+      ]
+    },
+    "isPublished": false,
+    "isLocked": true,
+    "id": 1613572533954,
+    "dataset": "covid"
+  },
+  {
+    "query": "SELECT ?p (group_concat(distinct ?name ; separator = '--') as ?author)\n    (sample(?d) as ?date) (sample(?t) as ?label) (sample(?id) as ?pmid)\nWHERE {\n\tselect * where {\n\t\t?p dcterms:title ?t ;\n\t\t\tdcterms:issued ?d ;\n\t\t\tdc:creator ?name ;\n\t\tbibo:pmid ?id .\n\t\tfilter contains(?t, \"coronavirus\")\n\t\tfilter (?d >= \"$beginYear-01-01\"^^xsd:date)\n\t\tfilter (?d <= \"$endYear-12-31\"^^xsd:date)\n\t} limit 1000\n} group by ?p\n                    \n                        ",
+    "name": "Co-authorship in publications about coronavirus (with pmid)",
+    "uri": "https://covidontheweb.inria.fr/sparql",
+    "params": {
+      "type": 1,
+      "period": [
+        2015,
+        2020
+      ],
+      "prefixes": [
+        "PREFIX pro: <http://purl.org/spar/pro/>",
+        "PREFIX foaf: <http://xmlns.com/foaf/0.1/>",
+        "PREFIX dcterms: <http://purl.org/dc/terms/>",
+        "PREFIX dc: <http://purl.org/dc/elements/1.1/>",
+        "PREFIX schema: <http://schema.org/>",
+        "PREFIX bibo: <http://purl.org/ontology/bibo/>"
+      ]
+    },
+    "stylesheetActive": true,
+    "stylesheet": {
+      "appli": {
+        "name": "covid",
+        "debug": true
+      },
+      "node": {
+        "default": {
+          "color": "steelblue"
+        },
+        "mix": {
+          "color": "yellow"
+        },
+        "member": {
+          "color": "purple"
+        },
+        "other": {
+          "color": "green"
+        },
+        "fst": {
+          "color": "lightgreen",
+          "priority": 1
+        },
+        "snd": {
+          "color": "orange",
+          "priority": 2
+        },
+        "rst": {
+          "color": "purple",
+          "priority": 3
+        }
+      },
+      "edge": {
+        "color": "green"
+      },
+      "services": [
+        {
+          "label": "ACTA",
+          "url": "http://134.59.134.234:8081/analyseddocs?id="
+        },
+        {
+          "label": "Browser Corese",
+          "url": "http://corese.inria.fr/srv/service/covid?uri="
+        }
+      ]
+    },
+    "isPublished": false,
+    "isLocked": true,
+    "id": 1614592833284,
+    "dataset": "covid"
+  },
+  {
+    "query": "select ?p (group_concat(distinct ?n ;  separator = '--') as ?author)\n(sample(?d) as ?date) (sample(?t) as ?label) (sample(?tt) as ?type)\nwhere {\n\tselect * where {\n\t\t?p dcterms:creator ?a ;\n\t\t\tdcterms:type ?tt ;\n\t\t\tdcterms:title ?t .\n\t\t\n\t\t#bind (if (?tt in (doc:ConferencePaper, doc:Article, doc:Book, doc:Report), ?tt, doc:Report) as ?atype)\n\t\t\n\t\t?p dcterms:issued ?d .\n\t\tfilter (?d >= \"$beginYear-01-01\"^^xsd:date)\n\t\tfilter (?d <= \"$endYear-12-31\"^^xsd:date)\n\n\t\t?a hsc:structure ?x .\n\t\t?x org:unitOf ?s1 .\n\t\t?s1 skos:prefLabel \"$lab1\" . \n\n\t\t?a hsc:person ?p1 .\n\t\t?p1 foaf:name ?n \n \t} limit 10000 \n } \n group by ?p\n having (count(distinct ?n) > 1) \n",
+    "name": "Collaboration network of researchers within a particular institution (HAL)",
+    "uri": "https://data.archives-ouvertes.fr/sparql",
+    "params": {
+      "type": 1,
+      "period": [
+        2015,
+        2021
+      ],
+      "lab": [
+        "Laboratoire d'Informatique, Signaux, et Systèmes de Sophia Antipolis",
+        null
+      ],
+      "country": null,
+      "prefixes": [
+        "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>",
+        "PREFIX dcterms: <http://purl.org/dc/terms/>",
+        "PREFIX doc: <https://data.archives-ouvertes.fr/doctype/>",
+        "PREFIX foaf: <http://xmlns.com/foaf/0.1/>",
+        "PREFIX hsc: <http://data.archives-ouvertes.fr/schema/>",
+        "PREFIX org: <http://www.w3.org/ns/org#>"
+      ]
+    },
+    "isLocked": true,
+    "id": 1,
+    "dataset": "hal"
+  },
+  {
+    "query": "select ?s ?p ?o ?date ?label ?type  where { \n\t?p dcterms:creator ?a1 ;\n\t\tdcterms:creator ?a2 ; \n\t\tdcterms:type ?type ;\n\t\tdcterms:title ?label ;\n\t\tdcterms:issued ?date . \n\n\tfilter (?date >= \"$beginYear-01-01\"^^xsd:date) \n\tfilter (?date <= \"$endYear-12-31\"^^xsd:date) \n\n\t?a1 hsc:structure ?x1 .\n\t?a2 hsc:structure ?x2 . \n\n\t?x1 org:unitOf ?s1 . \n\t?x2 org:unitOf ?s2 . \n\t?s1 skos:prefLabel  \"$lab1\" .\n\t?s2 skos:prefLabel  \"$lab2\" . \n\t\t\n\n\t?a1 hsc:person ?p1 . \n\t?p1 foaf:name ?s .    \n\t?a2 hsc:person ?p2 . \n\t?p2 foaf:name ?o .\n \n\tfilter (?p1 != ?p2) \n} limit 10000",
+    "name": "Collaboration between two institutions (HAL)",
+    "uri": "https://data.archives-ouvertes.fr/sparql",
+    "params": {
+      "type": 2,
+      "period": [
+        2015,
+        2021
+      ],
+      "lab": [
+        "Laboratoire d'Informatique, Signaux, et Systèmes de Sophia Antipolis",
+        "Inria Nancy - Grand Est"
+      ],
+      "country": null,
+      "prefixes": [
+        "PREFIX hsc: <http://data.archives-ouvertes.fr/schema/>",
+        "PREFIX dcterms: <http://purl.org/dc/terms/>",
+        "PREFIX org: <http://www.w3.org/ns/org#>",
+        "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>",
+        "PREFIX foaf: <http://xmlns.com/foaf/0.1/>"
+      ]
+    },
+    "isLocked": true,
+    "id": 4,
+    "dataset": "hal"
+  },
+  {
+    "query": "select ?s ?p ?o ?date ?label ?type  where { \n\t?p dcterms:creator ?a1 ;\n\t\tdcterms:creator ?a2 ; \n\t\tdcterms:type ?type ;\n\t\tdcterms:title ?label ;\n\t\tdcterms:issued ?date . \n\n\tfilter (?date >= \"$beginYear-01-01\"^^xsd:date)\n\tfilter (?date <= \"$endYear-12-31\"^^xsd:date)\n\t\n\t?a1 hsc:structure ?x . \n\t?a2 hsc:structure ?y . \n\n\t?x org:unitOf ?sam . \n\t?sam skos:prefLabel \"$lab1\" . \n\n\t?y vs:country-name ?country . \n\tfilter (?country = db:countryf || ?country = db:countrye ) \n\n\t?a1 hsc:person ?p1 . \n\t?p1 foaf:name ?s .   \n\t?a2 hsc:person ?p2 . \n\t?p2 foaf:name ?o . \n\tfilter (?p1 != ?p2) \n} limit 10000",
+    "name": "Collaboration between an institution and a country (HAL)",
+    "uri": "https://data.archives-ouvertes.fr/sparql",
+    "params": {
+      "type": 3,
+      "period": [
+        2015,
+        2021
+      ],
+      "lab": [
+        "Laboratoire d'Informatique, Signaux, et Systèmes de Sophia Antipolis",
+        null
+      ],
+      "country": "France",
+      "prefixes": [
+        "PREFIX hsc: <http://data.archives-ouvertes.fr/schema/>",
+        "PREFIX dcterms: <http://purl.org/dc/terms/>",
+        "PREFIX vs: <http://www.w3.org/2006/vcard/ns#>",
+        "PREFIX db:  <http://fr.dbpedia.org/resource/>",
+        "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>",
+        "PREFIX org: <http://www.w3.org/ns/org#>",
+        "PREFIX foaf: <http://xmlns.com/foaf/0.1/>"
+      ]
+    },
+    "isLocked": true,
+    "id": 5,
+    "dataset": "hal"
+  },
+  {
+    "query": "select distinct ?s ?p ?o ?label ?type ?date ?authorList where {\n\t{select * where {\n\t  \t?p dcterms:creator ?a ;\n\t\t\tdcterms:title ?label ;\n\t\t\tdcterms:type ?type ;\n\t\t\tdcterms:issued ?date ;\n\t\t\thsc:topic ?t1, ?t2 .\n\n\t\tfilter (?date >= \"$beginYear-01-01\"^^xsd:date)\n\t\tfilter (?date <= \"$endYear-12-31\"^^xsd:date)\n\t\n\t\t?a hsc:structure ?x .\n\t\t?x org:unitOf ?i .\n\t\t?i skos:prefLabel \"$lab1\" .\n\n\t\t?t1 skos:prefLabel ?s .\n\t\t?t2 skos:prefLabel ?o .\n\n\t\tfilter langMatches(lang(?s), \"en\")\n\t\tfilter langMatches(lang(?o), \"en\")\n \t\tfilter(?t1 != ?t2)\n\t\t}\n\t}\n\t{select ?p (group_concat(?n ; separator=\"--\") as ?authorList) \n\twhere {\n\t\t?p dcterms:creator ?a .\n\t\t?a hsc:person ?p1 .\n\t\t?p1 foaf:name ?n .\n\t}\n\tgroup by ?p\n\t}\n}  ",
+    "name": "Scenario 4: Co-occurence of research topics in collaborative production of an institution (HAL)",
+    "uri": "https://data.archives-ouvertes.fr/sparql",
+    "params": {
+      "type": 1,
+      "period": [
+        2015,
+        2021
+      ],
+      "lab": [
+        "Laboratoire d'Informatique, Signaux, et Systèmes de Sophia Antipolis",
+        null
+      ],
+      "country": null,
+      "prefixes": [
+        "PREFIX hsc: <http://data.archives-ouvertes.fr/schema/>",
+        "PREFIX dcterms: <http://purl.org/dc/terms/>",
+        "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>",
+        "PREFIX org: <http://www.w3.org/ns/org#>"
+      ]
+    },
+    "isPublished": false,
+    "isLocked": true,
+    "id": 1617984074669,
+    "dataset": "hal"
+  },
+  {
+    "query": "select ?s ?p ?o ?label ?date ?type ?authorList where {\n\t{select * where {\n \t\t?p dcterms:creator ?a1, ?a2 .\n\n\t     \t?p dcterms:title ?label ;\n     \t\t\tdcterms:issued ?date ;\n\t     \t\tdcterms:type ?type .\n\n\t\tfilter (?date >= \"$beginYear-01-01\"^^xsd:date)\n\t\tfilter (?date <= \"$endYear-12-31\"^^xsd:date)\n\n\t \t?a1 hsc:structure ?x .\n\t\t?x org:unitOf ?s1 .\n\t\t?s1 skos:prefLabel ?s .\n\n \t\t?a2 hsc:structure ?y .\n\t\t?y org:unitOf ?s2 .\n\t\t?s2 skos:prefLabel ?o .\n\t\n\t\tfilter(?s = \"$lab1\")\n\t\tfilter(?x != ?y)\n\t\t}\n\t}\n\t{select ?p (group_concat(?n ; separator=\"--\") as ?authorList) \n\t\twhere {\n  \t      \t\t?p dcterms:creator ?a .\n       \t\t\t?a hsc:person ?p1 .\n        \t\t?p1 foaf:name ?n .\n    \t\t} \n\t\tgroup by ?p\n  \t} \n}",
+    "name": "Collaboration of an institution with other institutions (HAL)",
+    "uri": "https://data.archives-ouvertes.fr/sparql",
+    "params": {
+      "type": 1,
+      "period": [
+        2015,
+        2021
+      ],
+      "lab": [
+        "Laboratoire d'Informatique, Signaux, et Systèmes de Sophia Antipolis",
+        null
+      ],
+      "country": null,
+      "prefixes": [
+        "PREFIX hsc: <http://data.archives-ouvertes.fr/schema/>",
+        "PREFIX dcterms: <http://purl.org/dc/terms/>",
+        "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>",
+        "PREFIX org: <http://www.w3.org/ns/org#>"
+      ]
+    },
+    "isPublished": false,
+    "isLocked": true,
+    "id": 1619422525617,
+    "dataset": "hal"
+  },
+  {
+    "query": "select * where { \n\t?p dcterms:creator ?x, ?x1, ?x2 ;\n\t\tdcterms:type ?type ;\n\t\tdcterms:title ?label ;\n\t\tdcterms:issued ?date . \n\n\tfilter (?date >= \"$beginYear-01-01\"^^xsd:date)\n\tfilter (?date <= \"$endYear-12-31\"^^xsd:date)\n        \n\t?x hsc:person ?a .\n\t?a foaf:name \"Fabien Gandon\" .\n\t?x hsc:structure ?s1 .\n\t?s1 org:unitOf ?inst .\n\t?inst skos:prefLabel \"$lab1\" .  \n\n\t?x1 hsc:person ?a1 .\n\t?a1 foaf:name ?s .\n\n\t?x2 hsc:person ?a2 .\n\t?a2 foaf:name ?o .\n\tfilter(?x1 != ?x2)\n}    ",
+    "name": "Scenario 1: Collaboration network of a particular researcher of a particular institution (HAL)",
+    "uri": "https://data.archives-ouvertes.fr/sparql",
+    "params": {
+      "type": 1,
+      "period": [
+        2015,
+        2021
+      ],
+      "lab": [
+        "Laboratoire d'Informatique, Signaux, et Systèmes de Sophia Antipolis",
+        null
+      ],
+      "country": null,
+      "prefixes": [
+        "PREFIX dcterms: <http://purl.org/dc/terms/>",
+        "PREFIX hsc: <http://data.archives-ouvertes.fr/schema/>",
+        "PREFIX foaf: <http://xmlns.com/foaf/0.1/>",
+        "PREFIX org: <http://www.w3.org/ns/org#>",
+        "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>"
+      ]
+    },
+    "isPublished": false,
+    "isLocked": true,
+    "id": 1619450341317,
+    "dataset": "hal"
+  },
+  {
+    "query": "select ?p ?s ?o (sample(?tt) as ?label) (sample(?t) as ?type) (sample(?d) as ?date) (sample(?u) as ?url) where {\n\t?p a magc:Paper ;\n\t\tdcterms:title ?tt ;\n\t\tprism:publicationDate ?d ;\n\t\tdcterms:creator ?a1, ?a2 ;\n\t\tfabio:hasDiscipline ?field ;\n\t\tfabio:hasURL ?u ;\n\t\ta ?t .\n\t?field foaf:name \"Computer science\"^^xsd:string .\n\n\tfilter (?d >= \"$beginYear-01-01\"^^xsd:date)\n\tfilter (?d <= \"$endYear-12-31\"^^xsd:date)\n\n\t?a1 org:memberOf ?s1 ; foaf:name ?s .\n\t?a2 org:memberOf ?s2 ; foaf:name ?o .\n\t?s1 foaf:name \"$lab1\"^^xsd:string .\n\t?s2 foaf:name \"$lab1\"^^xsd:string .\n\n\tfilter(?a1 != ?a2)\n\tfilter(?t != magc:Paper)\n}\ngroup by ?p ?s ?o\nlimit 10000",
+    "name": "Collaboration network of researchers within an institution (MAKG)",
+    "uri": "https://makg.org/sparql",
+    "params": {
+      "type": 1,
+      "period": [
+        2015,
+        2021
+      ],
+      "lab": [
+        "Universidade Federal do Rio Grande do Sul",
+        null
+      ],
+      "country": null,
+      "prefixes": [
+        "PREFIX magc: <https://makg.org/class/>",
+        "PREFIX foaf: <http://xmlns.com/foaf/0.1/>",
+        "PREFIX dcterms: <http://purl.org/dc/terms/>",
+        "PREFIX prism: <http://prismstandard.org/namespaces/basic/2.0/>",
+        "PREFIX fabio: <http://purl.org/spar/fabio/>",
+        "PREFIX org: <http://www.w3.org/ns/org#>"
+      ]
+    },
+    "isPublished": false,
+    "isLocked": true,
+    "id": 1619512806070,
+    "dataset": "hal"
+  },
+  {
+    "query": "select ?s ?p ?o (sample(?tt) as ?label) (sample(?d) as ?date) (sample(?t) as ?type) (sample(?u) as ?url) (sample(?authors) as ?authorList) where {\n\t{select * where {\n\t\t?p dcterms:creator ?a1, ?a2 ;\n\t\t\tdcterms:title ?tt ;\n\t\t\tprism:publicationDate ?d ;\n\t\t\ta ?t ;\n\t\t\tfabio:hasDiscipline ?field ;\n\t\t\tfabio:hasURL ?u .\n\t\t?field foaf:name \"Computer science\"^^xsd:string .\n\n\t\tfilter (?d >= \"$beginYear-01-01\"^^xsd:date)\n\t\tfilter (?d <= \"$endYear-12-31\"^^xsd:date)\n\n\t\t?a1 org:memberOf ?x .\n\t\t?x foaf:name ?s .\n\t\tfilter(?s = \"$lab1\"^^xsd:string)\n\n\t\t?a2 org:memberOf ?y .\n\t\t?y foaf:name ?o .\n\t\n\t\tfilter (?x != ?y)\n\t\tfilter(?t != magc:Paper)\n\n\t\t} limit 10000 \n\t}\n\t{select ?p (group_concat(?n ; separator=\"--\") as ?authors) \n\twhere {\n\t\t?p dcterms:creator ?a .\n\t\t?a foaf:name ?n .\n\t}\n\tgroup by ?p\n\t}\n} group by ?p ?s ?o",
+    "name": "Collaborations of an institution with other institutions (MAKG)",
+    "uri": "https://makg.org/sparql",
+    "params": {
+      "type": 1,
+      "period": [
+        2015,
+        2021
+      ],
+      "lab": [
+        "Universidade Federal do Rio Grande do Sul",
+        null
+      ],
+      "country": null,
+      "prefixes": [
+        "PREFIX dcterms: <http://purl.org/dc/terms/>",
+        "PREFIX magc: <https://makg.org/class/>",
+        "PREFIX prism: <http://prismstandard.org/namespaces/basic/2.0/>",
+        "PREFIX org: <http://www.w3.org/ns/org#>",
+        "PREFIX foaf: <http://xmlns.com/foaf/0.1/>",
+        "PREFIX fabio: <http://purl.org/spar/fabio/>",
+        "PREFIX  xsd: <http://www.w3.org/2001/XMLSchema#>"
+      ]
+    },
+    "isPublished": false,
+    "isLocked": true,
+    "id": 1619516080424,
+    "dataset": "hal"
+  },
+  {
+    "query": "select ?s ?p ?o (sample(?tt) as ?label) (sample(?d) as ?date) (sample(?t) as ?type) (sample(?u) as ?url) where {\n\t?p a magc:Paper ; \n\t\tdcterms:creator ?a1, ?a2 ;\n\t\tdcterms:title ?tt ;\n\t\tprism:publicationDate ?d ;\n\t\tfabio:hasDiscipline ?field ;\n\t\tfabio:hasURL ?u ;\n\t\ta ?t .\n\t?field foaf:name \"Computer science\"^^xsd:string .\t\n\n\tfilter (?d >= \"$beginYear-01-01\"^^xsd:date)\n\tfilter (?d <= \"$endYear-12-31\"^^xsd:date)\n\n\t?a1 org:memberOf ?x ; foaf:name ?s .\n\t?x foaf:name \"$lab1\"^^xsd:string .\n\n\t?a2 org:memberOf ?y ; foaf:name ?o .\n\t?y foaf:name \"$lab2\"^^xsd:string .\n\n\tfilter(?a1 != ?a2)\n\tfilter(?t != magc:Paper)\n\n}group by ?p ?s ?o\nlimit 10000",
+    "name": "Collaboration between two institutions (MAKG)",
+    "uri": "https://makg.org/sparql",
+    "params": {
+      "type": 2,
+      "period": [
+        2015,
+        2021
+      ],
+      "lab": [
+        "Universidade Federal do Rio Grande do Sul",
+        "Pontifícia Universidade Católica do Rio Grande do Sul"
+      ],
+      "country": null,
+      "prefixes": [
+        "PREFIX dcterms: <http://purl.org/dc/terms/>",
+        "PREFIX prism: <http://prismstandard.org/namespaces/basic/2.0/>",
+        "PREFIX org: <http://www.w3.org/ns/org#>",
+        "PREFIX foaf: <http://xmlns.com/foaf/0.1/>",
+        "PREFIX fabio: <http://purl.org/spar/fabio/>",
+        "PREFIX  xsd: <http://www.w3.org/2001/XMLSchema#>",
+        "PREFIX magc: <https://makg.org/class/>"
+      ]
+    },
+    "isPublished": false,
+    "isLocked": true,
+    "id": 1619591345951,
+    "dataset": "hal"
+  },
+  {
+    "query": "select ?s ?p ?o where {\n\t?p a cito:Citation ;\n\t\tcito:hasCitingEntry ?p1 ;\n\t\tcito:hasCitedEntry ?p2 .\n\n\t?p1 dcterms:creator ?a1 .\n\t?p2 dcterms:creator ?a2 .\n\tfilter(?a1 != ?a2)\n\n\t?a1 foaf:name ?s .\n\t?a2 foaf:name ?o.\n}limit 100",
+    "name": "Co-citation between authors (not working yet)",
+    "uri": "https://makg.org/sparql",
+    "params": {
+      "type": 1,
+      "period": [
+        2021,
+        2021
+      ],
+      "lab": [
+        21
+      ],
+      "country": "FR",
+      "prefixes": [
+        "PREFIX cito: <http://purl.org/spar/cito/>",
+        "PREFIX dcterms: <http://purl.org/dc/terms/>",
+        "PREFIX foaf: <http://xmlns.com/foaf/0.1/>"
+      ]
+    },
+    "isPublished": false,
+    "isLocked": true,
+    "id": 1619593223742,
+    "dataset": "hal"
+  },
+  {
+    "query": "select ?s ?p ?o ?date ?label ?type  where { \n\t?p dcterms:creator ?a1, ?a2 ; \n\t\tdcterms:type ?type ;\n\t\tdcterms:title ?label ;\n\t\tdcterms:issued ?date . \n\n\tfilter (?date >= \"$beginYear-01-01\"^^xsd:date)\n\tfilter (?date <= \"$endYear-12-31\"^^xsd:date)\n\n\t?a1 hsc:structure ?x1 .\n\t?x1 org:unitOf ?s1 . \n\t?s1 skos:prefLabel  \"$lab1\" .\t\t\n\n\t?a1 hsc:person ?p1 . \n\t?p1 foaf:name ?s .    \n\t?a2 hsc:person ?p2 . \n\t?p2 foaf:name ?o .\n \n\tfilter (?p1 != ?p2) \n} limit 10000",
+    "name": "Scenario 2: Collaboration networks of researchers of a particular institution (HAL)",
+    "uri": "https://data.archives-ouvertes.fr/sparql",
+    "params": {
+      "type": 1,
+      "period": [
+        2015,
+        2020
+      ],
+      "lab": [
+        "Laboratoire d'Informatique, Signaux, et Systèmes de Sophia Antipolis",
+        null
+      ],
+      "country": null,
+      "prefixes": [
+        "PREFIX hsc: <http://data.archives-ouvertes.fr/schema/>",
+        "PREFIX dcterms: <http://purl.org/dc/terms/>",
+        "PREFIX org: <http://www.w3.org/ns/org#>",
+        "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>",
+        "PREFIX foaf: <http://xmlns.com/foaf/0.1/>"
+      ]
+    },
+    "isPublished": false,
+    "isLocked": true,
+    "id": 1619615547145,
+    "dataset": "hal"
+  },
+  {
+    "query": "select ?p ?s ?o (sample(?tt) as ?label) (sample(?t) as ?type) (sample(?d) as ?date) (sample(?u) as ?url) where {\n\t?p a magc:Paper ;\n\t\tdcterms:title ?tt ;\n\t\tprism:publicationDate ?d ;\n\t\tdcterms:creator ?a1, ?a2 ;\n\t\tfabio:hasDiscipline ?field ;\n\t\tfabio:hasURL ?u ;\n\t\ta ?t .\n\t?field foaf:name \"Computer science\"^^xsd:string .\n\n\tfilter (?d >= \"$beginYear-01-01\"^^xsd:date)\n\tfilter (?d <= \"$endYear-12-31\"^^xsd:date)\n\n\t?a1 org:memberOf ?s1 ; foaf:name ?s .\n\t?a2 foaf:name ?o .\n\t?s1 foaf:name \"$lab1\"^^xsd:string .\n\t\n\tfilter(?t != magc:Paper)\n\tfilter(?a1 != ?a2)\n}group by ?p ?s ?o\nlimit 10000",
+    "name": "Scenario 2: Collaboration networks of researchers of a particular institution (MAKG)",
+    "uri": "https://makg.org/sparql",
+    "params": {
+      "type": 1,
+      "period": [
+        2015,
+        2021
+      ],
+      "lab": [
+        "Universidade Federal do Rio Grande do Sul",
+        null
+      ],
+      "country": null,
+      "prefixes": [
+        "PREFIX magc: <https://makg.org/class/>",
+        "PREFIX foaf: <http://xmlns.com/foaf/0.1/>",
+        "PREFIX dcterms: <http://purl.org/dc/terms/>",
+        "PREFIX prism: <http://prismstandard.org/namespaces/basic/2.0/>",
+        "PREFIX fabio: <http://purl.org/spar/fabio/>",
+        "PREFIX org: <http://www.w3.org/ns/org#>",
+        "PREFIX  xsd: <http://www.w3.org/2001/XMLSchema#>"
+      ]
+    },
+    "isPublished": false,
+    "isLocked": true,
+    "id": 1619618189758,
+    "dataset": "hal"
+  },
+  {
+    "query": "select ?s ?p ?o ?date ?label ?type  where { \n\t?p dcterms:creator ?a1 ;\n\t\tdcterms:creator ?a2 ; \n\t\tdcterms:type ?type ;\n\t\tdcterms:title ?label ;\n\t\tdcterms:issued ?date . \n\t\n\tfilter (?date >= \"$beginYear-01-01\"^^xsd:date)\n\tfilter (?date <= \"$endYear-12-31\"^^xsd:date)\n\n\t?a1 hsc:structure ?x1 .\n\t?x1 org:unitOf ?s1 . \n\t?s1 skos:prefLabel  \"$lab1\" .\t\t\n\t\n\t?a2 hsc:structure ?x2 .\n\t?x2 org:unitOf ?s2 .\n\tfilter(?s1 != ?s2)\t\n\n\t?a1 hsc:person ?p1 . \n\t?p1 foaf:name ?s .    \n\t?a2 hsc:person ?p2 . \n\t?p2 foaf:name ?o .\n \n\tfilter (?p1 != ?p2) \n} limit 10000",
+    "name": "External collaborations of an institution at individual level (HAL)",
+    "uri": "https://data.archives-ouvertes.fr/sparql",
+    "params": {
+      "type": 1,
+      "period": [
+        2015,
+        2021
+      ],
+      "lab": [
+        "Laboratoire d'Informatique, Signaux, et Systèmes de Sophia Antipolis",
+        null
+      ],
+      "country": null,
+      "prefixes": [
+        "PREFIX hsc: <http://data.archives-ouvertes.fr/schema/>",
+        "PREFIX dcterms: <http://purl.org/dc/terms/>",
+        "PREFIX org: <http://www.w3.org/ns/org#>",
+        "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>",
+        "PREFIX foaf: <http://xmlns.com/foaf/0.1/>"
+      ]
+    },
+    "isPublished": false,
+    "isLocked": true,
+    "id": 1619618706164,
+    "dataset": "hal"
+  },
+  {
+    "query": "select ?p ?s ?o (sample(?t) as ?type) (sample(?tt) as ?label) (sample(?d) as ?date) (sample(?u) as ?url) where {\n\t?p a magc:Paper ;\n\t\tdcterms:title ?tt ;\n\t\tprism:publicationDate ?d ;\n\t\tdcterms:creator ?a1, ?a2 ;\n\t\tfabio:hasDiscipline ?field ;\n\t\tfabio:hasURL ?u ;\n\t\ta ?t .\n\t?field foaf:name \"Computer science\"^^xsd:string .\n\n\tfilter (?d >= \"$beginYear-01-01\"^^xsd:date)\n\tfilter (?d <= \"$endYear-12-31\"^^xsd:date)\n\n\t?a1 org:memberOf ?s1 ; foaf:name ?s .\n\t?a2 org:memberOf ?s2 ; foaf:name ?o .\n\t\n\t?s1 foaf:name \"$lab1\"^^xsd:string .\n\n\tfilter(?a1 != ?a2)\n\tfilter(?s1 != ?s2)\n}\ngroup by ?p ?s ?o\nlimit 10000",
+    "name": "External collaborations of institution at individual level (MAKG)",
+    "uri": "https://makg.org/sparql",
+    "params": {
+      "type": 1,
+      "period": [
+        2015,
+        2021
+      ],
+      "lab": [
+        "Universidade Federal do Rio Grande do Sul",
+        null
+      ],
+      "country": null,
+      "prefixes": [
+        "PREFIX magc: <https://makg.org/class/>",
+        "PREFIX foaf: <http://xmlns.com/foaf/0.1/>",
+        "PREFIX dcterms: <http://purl.org/dc/terms/>",
+        "PREFIX prism: <http://prismstandard.org/namespaces/basic/2.0/>",
+        "PREFIX fabio: <http://purl.org/spar/fabio/>",
+        "PREFIX org: <http://www.w3.org/ns/org#>",
+        "PREFIX  xsd: <http://www.w3.org/2001/XMLSchema#>"
+      ]
+    },
+    "isPublished": false,
+    "isLocked": true,
+    "id": 1619619689702,
+    "dataset": "hal"
+  },
+  {
+    "query": "select ?p ?s ?o (sample(?t) as ?type) (sample(?tt) as ?label) (sample(?d) as ?date) (sample(?u) as ?url) (sample(?authors) as ?authorList) where {\n\t{select * where {\n\t\t?p a magc:Paper ;\n\t\t\tdcterms:title ?tt;\n\t\t\tprism:publicationDate ?d ;\n\t\t\tdcterms:creator ?a ;\n\t\t\tfabio:hasDiscipline ?field ;\n\t\t\tfabio:hasURL ?u ;\n\t\t\ta ?t ;\n\t\t\tprism:keyword ?s, ?o .\n\t\t?field foaf:name \"Computer science\"^^xsd:string .\n\n\t\tfilter (?d >= \"$beginYear-01-01\"^^xsd:date)\n\t\tfilter (?d <= \"$endYear-12-31\"^^xsd:date)\n\n\t\t?a org:memberOf ?s1 .\n\t\t?s1 foaf:name \"$lab1\"^^xsd:string .\n\n\t\tfilter(?s != ?o)\n\t\tfilter(?t != magc:Paper)\n\t\t}limit 15000\n\t}\n\t{select ?p (group_concat(?n ; separator=\"--\") as ?authors) \n\twhere {\n\t\t?p dcterms:creator ?a .\n\t\t?a foaf:name ?n .\n\t}\n\tgroup by ?p\n\t}\n} group by ?p ?s ?o",
+    "name": "Scenario 4: Co-occurence of research topics in collaborative production of an institution (MAKG)",
+    "uri": "https://makg.org/sparql",
+    "params": {
+      "type": 1,
+      "period": [
+        2015,
+        2021
+      ],
+      "lab": [
+        "Universidade Federal do Rio Grande do Sul",
+        null
+      ],
+      "country": null,
+      "prefixes": [
+        "PREFIX magc: <https://makg.org/class/>",
+        "PREFIX foaf: <http://xmlns.com/foaf/0.1/>",
+        "PREFIX dcterms: <http://purl.org/dc/terms/>",
+        "PREFIX prism: <http://prismstandard.org/namespaces/basic/2.0/>",
+        "PREFIX fabio: <http://purl.org/spar/fabio/>",
+        "PREFIX org: <http://www.w3.org/ns/org#>",
+        "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>"
+      ]
+    },
+    "isPublished": false,
+    "isLocked": true,
+    "id": 1619623351800,
+    "dataset": "hal"
+  },
+  {
+    "query": "select * where {\n\nservice <https://makg.org/sparql> {\n\tselect * where {\n    \t?p a magc:Paper ;\n\t\tdcterms:creator ?a1, ?a2 ;\n        \tdcterms:title ?label ;\n        \tprism:publicationDate ?date ;\n\t\tfabio:hasDiscipline ?d ;\n\t\tfabio:hasURL ?url ;\n        \ta ?type .\n\t?d foaf:name \"Computer science\"^^xsd:string .\t\n\n\tfilter (?date >= \"$beginYear-01-01\"^^xsd:date)\n\tfilter (?date <= \"$endYear-12-31\"^^xsd:date)\n\n \t?a1 org:memberOf ?x ; foaf:name ?s .\n  \t?x foaf:name \"$lab1\"^^xsd:string .\n\n    \t?a2 org:memberOf ?y ; foaf:name ?o .\n\n   \t?y foaf:name ?s2 .\n    \t?y owl:sameAs ?place .\n\t\n\tfilter(?a1 != ?a2)\n\tfilter(?type != magc:Paper)\n\n\t} limit 10000\n}\n\n\nservice <https://dbpedia.org/sparql> {\n    select * where {\n        ?place dbo:country ?c .\n\t?c dbp:commonName ?country .\n\tFILTER(langMatches(lang(?country), \"en\"))\n\tfilter(?country = \"$country\"@en)\n    }\n}\n\n\n} ",
+    "name": "Collaboration between an institution and a country (MAKG)",
+    "uri": "http://corese.inria.fr/sparql",
+    "params": {
+      "type": 3,
+      "period": [
+        2015,
+        2021
+      ],
+      "lab": [
+        "Universidade Federal do Rio Grande do Sul",
+        null
+      ],
+      "country": "Brazil",
+      "prefixes": [
+        "PREFIX dcterms: <http://purl.org/dc/terms/>",
+        "PREFIX prism: <http://prismstandard.org/namespaces/basic/2.0/>",
+        "PREFIX org: <http://www.w3.org/ns/org#>",
+        "PREFIX foaf: <http://xmlns.com/foaf/0.1/>",
+        "PREFIX dbo: <http://dbpedia.org/property/>",
+        "PREFIX dbp: <http://dbpedia.org/property/>",
+        "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>",
+        "PREFIX  xsd: <http://www.w3.org/2001/XMLSchema#>",
+        "PREFIX magc: <https://makg.org/class/>",
+        "PREFIX fabio: <http://purl.org/spar/fabio/>"
+      ]
+    },
+    "isPublished": false,
+    "isLocked": true,
+    "id": 1619625288354,
+    "dataset": "hal"
+  },
+  {
+    "query": "select ?p ?s ?o (sample(?d) as ?date) (sample(?t) as ?type) (sample(?tt) as ?label) (sample(?authors) as ?authorList) where { \n\nservice <https://data.archives-ouvertes.fr/sparql> {\n\t{select * where {\n\t\t?p dcterms:creator ?a1, ?a2 ; \n\t\t\tdcterms:type ?t ;\n\t\t\tdcterms:title ?tt ;\n\t\t\tdcterms:issued ?d ;\n\t\t\tdcterms:references ?ref .\n\t\tfilter(?a1 != ?a2)\n\n\t\tfilter (?d >= \"$beginYear-01-01\"^^xsd:date)\n\t\tfilter (?d <= \"$endYear-12-31\"^^xsd:date)\n\t\n\t\t?a1 hsc:structure ?x . \n\t\t?a2 hsc:structure ?y . \n\n\t\t?x org:unitOf ?sam . \n\t\t?sam skos:prefLabel ?s .\n\t\tfilter(?s = \"$lab1\")\n \n\t\t?y vcard:country-name ?country .\n\t\tfilter (?country != db:countryf || ?country != db:countrye) \n\t\t\n\t\t} limit 10000\n\t}\n\t{select ?p (group_concat(?n ; separator=\"--\") as ?authors) \n\twhere {\n\t\t?p dcterms:creator ?a .\n\t\t?a hsc:person ?p1 .\n\t\t?p1 foaf:name ?n .\n\t}\n\tgroup by ?p\n\t}\n}\n\nservice <http://fr.dbpedia.org/sparql>{\n\tselect * where { \n\t\t?country rdfs:label ?o .\n\t\tFILTER(langMatches(lang(?o), \"en\"))\n\t}\n}\n} group by ?p ?s ?o",
+    "name": "Scenario 3: Collaborations of an institution with different countries (HAL)",
+    "uri": "http://corese.inria.fr/sparql",
+    "params": {
+      "type": 3,
+      "period": [
+        2015,
+        2021
+      ],
+      "lab": [
+        "Laboratoire d'Informatique, Signaux, et Systèmes de Sophia Antipolis",
+        null
+      ],
+      "country": "France",
+      "prefixes": [
+        "PREFIX hsc: <http://data.archives-ouvertes.fr/schema/>",
+        "PREFIX dcterms: <http://purl.org/dc/terms/>",
+        "PREFIX vcard: <http://www.w3.org/2006/vcard/ns#>",
+        "PREFIX db:  <http://fr.dbpedia.org/resource/>",
+        "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>",
+        "PREFIX org: <http://www.w3.org/ns/org#>",
+        "PREFIX foaf: <http://xmlns.com/foaf/0.1/>",
+        "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>"
+      ]
+    },
+    "isPublished": false,
+    "isLocked": true,
+    "id": 1619714893263,
+    "dataset": "hal"
+  },
+  {
+    "query": "select ?p ?s ?o (sample(?tt) as ?label) (sample(?t) as ?type) (sample(?d) as ?date) (sample(?u) as ?url) (sample(?authors) as ?authorList) where {\n\nservice <https://makg.org/sparql> {\n\t{select * where {\n\t    \t?p a magc:Paper ;\n\t \t\tdcterms:creator ?a1, ?a2 ;\n        \t\tdcterms:title ?tt ;\n\t        \tprism:publicationDate ?d ;\n        \t\ta ?t ;\n\t\t\tfabio:hasDiscipline ?field ;\n\t\t\tfabio:hasURL ?u .\n\t\t?field foaf:name \"Computer science\"^^xsd:string .\n\n\t\tfilter (?d >= \"$beginYear-01-01\"^^xsd:date)\n\t\tfilter (?d <= \"$endYear-12-31\"^^xsd:date)\n\t\n\t\t?a1 org:memberOf ?x .\n\t  \t?x foaf:name ?s .\n\t\tfilter(?s = \"$lab1\"^^xsd:string) \n\n\t\t?a2 org:memberOf ?y .\n\n   \t\t?y foaf:name ?s2 .\n\t    \t?y owl:sameAs ?place .\n\t\t\n\t\tfilter(?t != magc:Paper)\n\t\tfilter(?a1 != ?a2)\n\t\t} limit 10000\n\t}\n\t{select ?p (group_concat(?n ; separator=\"--\") as ?authors) \n\twhere {\n\t\t?p dcterms:creator ?a .\n\t\t?a foaf:name ?n .\n\t}\n\tgroup by ?p\n\t}\n}\n\n\nservice <https://dbpedia.org/sparql> {\n    select * where {\n        ?place dbo:country ?c .\n\t?c dbp:commonName ?o .\n\tFILTER(langMatches(lang(?o), \"en\"))\n\tFILTER (?o != \"Brazil\"@en)\n    }\n}\n\n\n} group by ?p ?s ?o",
+    "name": "Scenario 3: Collaborations of an institution with different countries (MAKG)",
+    "uri": "http://corese.inria.fr/sparql",
+    "params": {
+      "type": 1,
+      "period": [
+        2015,
+        2021
+      ],
+      "lab": [
+        "Universidade Federal do Rio Grande do Sul",
+        null
+      ],
+      "country": null,
+      "prefixes": [
+        "PREFIX dcterms: <http://purl.org/dc/terms/>",
+        "PREFIX prism: <http://prismstandard.org/namespaces/basic/2.0/>",
+        "PREFIX org: <http://www.w3.org/ns/org#>",
+        "PREFIX foaf: <http://xmlns.com/foaf/0.1/>",
+        "PREFIX dbo: <http://dbpedia.org/property/>",
+        "PREFIX dbp: <http://dbpedia.org/property/>",
+        "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>",
+        "PREFIX fabio: <http://purl.org/spar/fabio/>",
+        "PREFIX  xsd: <http://www.w3.org/2001/XMLSchema#>",
+        "PREFIX magc: <https://makg.org/class/>"
+      ]
+    },
+    "isPublished": false,
+    "isLocked": true,
+    "id": 1619715119012,
+    "dataset": "hal"
+  },
+  {
+    "query": "select ?p ?s ?o (sample(?tt) as ?label) (sample(?t) as ?type) (sample(?d) as ?date) (sample(?u) as ?url) where {\n\t?a a magc:Author ; foaf:name \"João L. D. Comba\"^^xsd:string ; org:memberOf ?org .\n\t?org foaf:name \"$lab1\"^^xsd:string .\n\n\t?p a magc:Paper ;\n\t\tdcterms:creator ?a, ?a1, ?a2 ;\n\t\tdcterms:title ?tt ;\n\t\tprism:publicationDate ?d ;\n\t\tfabio:hasDiscipline ?field ;\n\t\tfabio:hasURL ?u ;\n\t\ta ?t .\n\t?field foaf:name \"Computer science\"^^xsd:string .\n\n\tfilter (?d >= \"$beginYear-01-01\"^^xsd:date)\n\tfilter (?d <= \"$endYear-12-31\"^^xsd:date)\n\n\t?a1 foaf:name ?s .\n\t?a2 foaf:name ?o .\n\t\n\tfilter(?t != magc:Paper)\n\tfilter(?a1 != ?a2)\n}\ngroup by ?p ?s ?o\nlimit 10000",
+    "name": "Scenario 1: Collaboration network of a particular researcher of a particular institution (MAKG)",
+    "uri": "https://makg.org/sparql",
+    "params": {
+      "type": 1,
+      "period": [
+        2015,
+        2021
+      ],
+      "lab": [
+        "Universidade Federal do Rio Grande do Sul",
+        null
+      ],
+      "country": null,
+      "prefixes": [
+        "PREFIX magc: <https://makg.org/class/>",
+        "PREFIX foaf: <http://xmlns.com/foaf/0.1/>",
+        "PREFIX dcterms: <http://purl.org/dc/terms/>",
+        "PREFIX prism: <http://prismstandard.org/namespaces/basic/2.0/>",
+        "PREFIX fabio: <http://purl.org/spar/fabio/>",
+        "PREFIX org: <http://www.w3.org/ns/org#>",
+        "PREFIX  xsd: <http://www.w3.org/2001/XMLSchema#>"
+      ]
+    },
+    "isPublished": false,
+    "isLocked": true,
+    "id": 1619775733562,
+    "dataset": "hal"
+  },
+  {
+    "query": "select * where {\n\n\tgraph st:geo {\n    \t\t<http://fr.dbpedia.org/resource/Amérique> ?member ?country\n\t}\n\n\tservice <https://data.archives-ouvertes.fr/sparql> {\n\t\tselect ?s ?p ?o ?date ?label ?type ?country\n\t\twhere {\n    \t\t\t?p dcterms:creator ?a1 ;\n\t\t\t        dcterms:creator ?a2 ;\n\t\t\t        dcterms:type ?type ;\n\t\t\t        dcterms:title ?label ;\n\t\t\t        dcterms:issued ?date .\n\n\t\t\t?a1 hsc:structure ?x .\n\t\t\t?a2 hsc:structure ?y .\n\n\t\t\t?x org:unitOf ?sam .\n\t\t\t?sam skos:prefLabel \"$lab1\" .\n\n\t\t\t?y vcard:country-name ?country .\n\n\t\t\t?a1 hsc:person ?p1 .\n\t\t\t?p1 foaf:name ?s .\n\t\t\t?a2 hsc:person ?p2 .\n\t\t\t?p2 foaf:name ?o .\n\t\t\tfilter (?p1 != ?p2)\n\t\t} limit 1000\n\t}\n}\n",
+    "name": "Collaboration between an institution and different continents (individual level) (HAL)",
+    "uri": "http://corese.inria.fr/halopendata/sparql",
+    "params": {
+      "type": 1,
+      "period": [
+        2015,
+        2021
+      ],
+      "lab": [
+        "Laboratoire d'Informatique, Signaux, et Systèmes de Sophia Antipolis",
+        null
+      ],
+      "country": null,
+      "prefixes": [
+        "PREFIX dcterms: <http://purl.org/dc/terms/>",
+        "PREFIX hsc: <http://data.archives-ouvertes.fr/schema/>",
+        "PREFIX org: <http://www.w3.org/ns/org#>",
+        "PREFIX skos: <http://www.w3.org/2004/02/skos/core#>",
+        "PREFIX foaf: <http://xmlns.com/foaf/0.1/>",
+        "PREFIX vcard: <http://www.w3.org/2006/vcard/ns#>"
+      ]
+    },
+    "id": 1620217559174,
+    "isLocked": true,
+    "isPublished": false
+  },
+  {
+    "query": "select * where {\n    \t?x rdfs:label \"Robert Redford\"@en .\n    \t?p dbo:starring ?x, ?a1, ?a2 .\n    \t?p rdfs:label ?label ;\n        \tdbp:released ?date ;\n\t\tdbp:genre ?type .\n    \t?a1 rdfs:label ?s filter langMatches(lang(?s), \"en\")\n    \t?a2 rdfs:label ?o filter langMatches(lang(?o), \"en\")\n    \tfilter langMatches(lang(?label), \"en\")\n    \tfilter (?a1 != ?a2)\n}      \n                 \n                ",
+    "name": "Robert Redford co-stars",
+    "uri": "https://dbpedia.org/sparql",
+    "params": {
+      "type": 1,
+      "prefixes": [
+        "PREFIX dbo: <http://dbpedia.org/ontology/>",
+        "PREFIX dbp: <http://dbpedia.org/property/>"
+      ]
+    },
+    "stylesheetActive": true,
+    "stylesheet": {
+      "appli": {
+        "name": "covid",
+        "debug": true
+      },
+      "node": {
+        "default": {
+          "color": "steelblue"
+        },
+        "mix": {
+          "color": "yellow"
+        },
+        "member": {
+          "color": "purple"
+        },
+        "other": {
+          "color": "green"
+        },
+        "fst": {
+          "color": "lightgreen",
+          "priority": 1
+        },
+        "snd": {
+          "color": "orange",
+          "priority": 2
+        },
+        "rst": {
+          "color": "purple",
+          "priority": 3
+        }
+      },
+      "edge": {
+        "color": "green"
+      },
+      "services": [
+        {
+          "label": "ACTA",
+          "url": "http://134.59.134.234:8081/analyseddocs?id="
+        },
+        {
+          "label": "Browser Corese",
+          "url": "http://corese.inria.fr/srv/service/covid?uri="
+        }
+      ]
+    },
+    "isPublished": false,
+    "isLocked": true,
+    "id": 1616766330455,
+    "dataset": "ldviz"
+  },
+  {
+    "query": "select distinct ?s (ldv: as ?p) ?o (\"fst\" as ?style) where { \n\t?x ?s ?y . ?y ?o ?z . \n\tfilter strstarts(str(?s), \"http://dbpedia.org/\")\n\tfilter strstarts(str(?o), \"http://dbpedia.org/\")\n\tfilter (?s != ?o) \n} limit 1000",
+    "name": "Property Paths",
+    "uri": "http://fr.dbpedia.org/sparql",
+    "params": {
+      "type": 1,
+      "prefixes": [
+        "prefix ldv: <http://ldv.fr/path/>"
+      ]
+    },
+    "stylesheetActive": true,
+    "stylesheet": {
+      "appli": {
+        "name": "covid",
+        "debug": true
+      },
+      "node": {
+        "default": {
+          "color": "steelblue"
+        },
+        "mix": {
+          "color": "yellow"
+        },
+        "member": {
+          "color": "purple"
+        },
+        "other": {
+          "color": "green"
+        },
+        "fst": {
+          "color": "lightgreen",
+          "priority": 1
+        },
+        "snd": {
+          "color": "orange",
+          "priority": 2
+        },
+        "rst": {
+          "color": "purple",
+          "priority": 3
+        }
+      },
+      "edge": {
+        "color": "green"
+      },
+      "services": [
+        {
+          "label": "ACTA",
+          "url": "http://134.59.134.234:8081/analyseddocs?id="
+        },
+        {
+          "label": "Browser Corese",
+          "url": "http://corese.inria.fr/srv/service/covid?uri="
+        }
+      ]
+    },
+    "isPublished": false,
+    "isLocked": true,
+    "id": 1617782917106,
+    "dataset": "ldviz"
+  },
+  {
+    "query": "select * where {\n\t{?s ?p ?o filter(?p = rdfs:subClassOf)} \n\tunion \n\t{?s ?p ?o filter(?p = rdfs:subPropertyOf)} \n\tunion \n\t{?s ?p ?o filter(?p = rdfs:domain)} \n\tunion \n\t{?s ?p ?o filter(?p = rdfs:range)}\n}limit 1000",
+    "name": "DBpedia RDF Schema Information",
+    "uri": "http://fr.dbpedia.org/sparql",
+    "params": {
+      "type": 1
+    },
+    "stylesheetActive": true,
+    "stylesheet": {
+      "appli": {
+        "name": "covid",
+        "debug": true
+      },
+      "node": {
+        "default": {
+          "color": "steelblue"
+        },
+        "mix": {
+          "color": "yellow"
+        },
+        "member": {
+          "color": "purple"
+        },
+        "other": {
+          "color": "green"
+        },
+        "fst": {
+          "color": "lightgreen",
+          "priority": 1
+        },
+        "snd": {
+          "color": "orange",
+          "priority": 2
+        },
+        "rst": {
+          "color": "purple",
+          "priority": 3
+        }
+      },
+      "edge": {
+        "color": "green"
+      },
+      "services": [
+        {
+          "label": "ACTA",
+          "url": "http://134.59.134.234:8081/analyseddocs?id="
+        },
+        {
+          "label": "Browser Corese",
+          "url": "http://corese.inria.fr/srv/service/covid?uri="
+        }
+      ]
+    },
+    "isPublished": false,
+    "isLocked": true,
+    "id": 1618384510862,
+    "dataset": "ldviz"
+  },
+  {
+    "query": "select * where {\n\t?s ?p ?o filter(?p = rdfs:subPropertyOf)\n\tbind (\"fst\" as ?style) \n}limit 100",
+    "name": "DBpedia: Hierachy of Properties",
+    "uri": "http://fr.dbpedia.org/sparql",
+    "params": {
+      "type": 1
+    },
+    "stylesheetActive": true,
+    "stylesheet": {
+      "appli": {
+        "name": "covid",
+        "debug": true
+      },
+      "node": {
+        "default": {
+          "color": "steelblue"
+        },
+        "mix": {
+          "color": "yellow"
+        },
+        "member": {
+          "color": "purple"
+        },
+        "other": {
+          "color": "green"
+        },
+        "fst": {
+          "color": "lightgreen",
+          "priority": 1
+        },
+        "snd": {
+          "color": "orange",
+          "priority": 2
+        },
+        "rst": {
+          "color": "purple",
+          "priority": 3
+        }
+      },
+      "edge": {
+        "color": "green"
+      },
+      "services": [
+        {
+          "label": "ACTA",
+          "url": "http://134.59.134.234:8081/analyseddocs?id="
+        },
+        {
+          "label": "Browser Corese",
+          "url": "http://corese.inria.fr/srv/service/covid?uri="
+        }
+      ]
+    },
+    "isPublished": false,
+    "isLocked": true,
+    "id": 1618560810260,
+    "dataset": "ldviz"
+  },
+  {
+    "query": "select * where {\n\t?s ?p ?o filter(?p = rdfs:subClassOf)\n\tbind (\"snd\" as ?style)\n}limit 100",
+    "name": "DBpedia: Hierachy of Classes",
+    "uri": "http://fr.dbpedia.org/sparql",
+    "params": {
+      "type": 1
+    },
+    "stylesheetActive": true,
+    "stylesheet": {
+      "appli": {
+        "name": "covid",
+        "debug": true
+      },
+      "node": {
+        "default": {
+          "color": "steelblue"
+        },
+        "mix": {
+          "color": "yellow"
+        },
+        "member": {
+          "color": "purple"
+        },
+        "other": {
+          "color": "green"
+        },
+        "fst": {
+          "color": "lightgreen",
+          "priority": 1
+        },
+        "snd": {
+          "color": "orange",
+          "priority": 2
+        },
+        "rst": {
+          "color": "purple",
+          "priority": 3
+        }
+      },
+      "edge": {
+        "color": "green"
+      },
+      "services": [
+        {
+          "label": "ACTA",
+          "url": "http://134.59.134.234:8081/analyseddocs?id="
+        },
+        {
+          "label": "Browser Corese",
+          "url": "http://corese.inria.fr/srv/service/covid?uri="
+        }
+      ]
+    },
+    "isPublished": false,
+    "isLocked": true,
+    "id": 1618560834796,
+    "dataset": "ldviz"
+  },
+  {
+    "query": "select * where {\n\t{?s ?p ?o filter(?p = rdfs:domain)}\n\tUNION\n\t{?s ?p ?o filter(?p = rdfs:range)}\n\t\n\tbind(\"fst\" as ?style1)\n\tbind(\"snd\" as ?style2)\n} limit 100",
+    "name": "DBpedia: Signature of Properties",
+    "uri": "http://fr.dbpedia.org/sparql",
+    "params": {
+      "type": 1
+    },
+    "stylesheetActive": true,
+    "stylesheet": {
+      "appli": {
+        "name": "covid",
+        "debug": true
+      },
+      "node": {
+        "default": {
+          "color": "steelblue"
+        },
+        "mix": {
+          "color": "yellow"
+        },
+        "member": {
+          "color": "purple"
+        },
+        "other": {
+          "color": "green"
+        },
+        "fst": {
+          "color": "lightgreen",
+          "priority": 1
+        },
+        "snd": {
+          "color": "orange",
+          "priority": 2
+        },
+        "rst": {
+          "color": "purple",
+          "priority": 3
+        }
+      },
+      "edge": {
+        "color": "green"
+      },
+      "services": [
+        {
+          "label": "ACTA",
+          "url": "http://134.59.134.234:8081/analyseddocs?id="
+        },
+        {
+          "label": "Browser Corese",
+          "url": "http://corese.inria.fr/srv/service/covid?uri="
+        }
+      ]
+    },
+    "isPublished": false,
+    "isLocked": true,
+    "id": 1618560954780,
+    "dataset": "ldviz"
+  },
+  {
+    "query": "select * where {\n\t?s ?p ?o \n} limit 1000     ",
+    "name": "DBpedia: RDF Graph",
+    "uri": "http://fr.dbpedia.org/sparql",
+    "params": {
+      "type": 1
+    },
+    "id": 1618574259112,
+    "isLocked": true,
+    "isPublished": false
+  },
+  {
+    "query": "select distinct ?s ?o (ldv: as ?p) ?style1 ?style2\nwhere {\n    {?a ?b ?c. ?a a ?s . filter strstarts(str(?s), \"http://dbpedia.org/\") filter strstarts(str(?b), \"http://dbpedia.org/\") bind (?b as ?o)}\n    union\n    {?a ?b ?c. ?c a ?s . filter strstarts(str(?s), \"http://dbpedia.org/\") filter strstarts(str(?b), \"http://dbpedia.org/\") bind (?b as ?o)}\n\tbind(\"fst\" as ?style2)\n\tbind(\"snd\" as ?style1)\n}\nlimit 1000     ",
+    "name": "Class->Property->Class Path",
+    "uri": "http://fr.dbpedia.org/sparql",
+    "params": {
+      "type": 1,
+      "prefixes": [
+        "prefix ldv: <http://ldv.fr/path/>"
+      ]
+    },
+    "stylesheetActive": true,
+    "stylesheet": {
+      "appli": {
+        "name": "covid",
+        "debug": true
+      },
+      "node": {
+        "default": {
+          "color": "steelblue"
+        },
+        "mix": {
+          "color": "yellow"
+        },
+        "member": {
+          "color": "purple"
+        },
+        "other": {
+          "color": "green"
+        },
+        "fst": {
+          "color": "lightgreen",
+          "priority": 1
+        },
+        "snd": {
+          "color": "orange",
+          "priority": 2
+        },
+        "rst": {
+          "color": "purple",
+          "priority": 3
+        }
+      },
+      "edge": {
+        "color": "green"
+      },
+      "services": [
+        {
+          "label": "ACTA",
+          "url": "http://134.59.134.234:8081/analyseddocs?id="
+        },
+        {
+          "label": "Browser Corese",
+          "url": "http://corese.inria.fr/srv/service/covid?uri="
+        }
+      ]
+    },
+    "isPublished": false,
+    "isLocked": true,
+    "id": 1618574454320,
+    "dataset": "ldviz"
+  },
+  {
+    "query": "prefix ldv: <http://ldv.fr/path/>\nselect distinct ?s ?p ?o (\"snd\" as ?style)\nwhere {\n    ?a ?p ?b . ?a a ?s . ?b a ?o filter strstarts(str(?s), \"http://dbpedia.org/\") filter strstarts(str(?o), \"http://dbpedia.org/\")\n}\nlimit 1000",
+    "name": "Class Paths",
+    "uri": "http://fr.dbpedia.org/sparql",
+    "params": {
+      "type": 1
+    },
+    "stylesheetActive": true,
+    "stylesheet": {
+      "appli": {
+        "name": "covid",
+        "debug": true
+      },
+      "node": {
+        "default": {
+          "color": "steelblue"
+        },
+        "mix": {
+          "color": "yellow"
+        },
+        "member": {
+          "color": "purple"
+        },
+        "other": {
+          "color": "green"
+        },
+        "fst": {
+          "color": "lightgreen",
+          "priority": 1
+        },
+        "snd": {
+          "color": "orange",
+          "priority": 2
+        },
+        "rst": {
+          "color": "purple",
+          "priority": 3
+        }
+      },
+      "edge": {
+        "color": "green"
+      },
+      "services": [
+        {
+          "label": "ACTA",
+          "url": "http://134.59.134.234:8081/analyseddocs?id="
+        },
+        {
+          "label": "Browser Corese",
+          "url": "http://corese.inria.fr/srv/service/covid?uri="
+        }
+      ]
+    },
+    "isPublished": false,
+    "isLocked": true,
+    "id": 1618574993320,
+    "dataset": "ldviz"
+  },
+  {
+    "query": "select ?p ?s ?o (sample(?tt) as ?label) (sample(?t) as ?type) (sample(?d) as ?date) (sample(?u) as ?url) where {\n\t?a a magc:Author ; foaf:name \"Fabien Gandon\"^^xsd:string .\n\n\t?p a magc:Paper ;\n\t\tdcterms:creator ?a, ?a1, ?a2 ;\n\t\tdcterms:title ?tt ;\n\t\tprism:publicationDate ?d ;\n\t\tfabio:hasDiscipline ?field ;\n\t\tfabio:hasURL ?u ;\n\t\ta ?t .\n\n\tfilter (?d >= \"$beginYear-01-01\"^^xsd:date)\n\tfilter (?d <= \"$endYear-12-31\"^^xsd:date)\n\n\t?a1 foaf:name ?s .\n\t?a2 foaf:name ?o .\n\t\n\tfilter(?t != magc:Paper)\n\tfilter(?a1 != ?a2)\n}\ngroup by ?p ?s ?o\nlimit 10000",
+    "name": "Collaboration network of a particular researcher of a particular institution (MAKG) (Fabien Gandon)",
+    "uri": "https://makg.org/sparql",
+    "params":
+    {
+        "type": 1,
+        "period":
+        [
+            2015,
+            2021
+        ],
+        "lab":
+        [
+            "Laboratoire d'Informatique, Signaux, et Systèmes de Sophia Antipolis",
+            null
+        ],
+        "country": null,
+        "list_authors": null,
+        "prefixes":
+        [
+            "PREFIX magc: <https://makg.org/class/>",
+            "PREFIX foaf: <http://xmlns.com/foaf/0.1/>",
+            "PREFIX dcterms: <http://purl.org/dc/terms/>",
+            "PREFIX prism: <http://prismstandard.org/namespaces/basic/2.0/>",
+            "PREFIX fabio: <http://purl.org/spar/fabio/>",
+            "PREFIX org: <http://www.w3.org/ns/org#>",
+            "PREFIX  xsd: <http://www.w3.org/2001/XMLSchema#>"
+        ]
+    },
+    "id": 1629736080587,
+    "isLocked": true,
+    "isPublished": false
+}
+]
+}

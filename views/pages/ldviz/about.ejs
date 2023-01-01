@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    
+    <%- include("./partials/head") %>
+    <title>Linked Data Visualizer</title>
+</head>
+
+<body class='body'>
+    <div class="header">
+        <h1>Linked Data Visualizer</h1>
+        <%- include("./partials/header") %>
+    </div>
+
+    <p>
+        This project support the visual exploration of linked data. You can use it to build, debug, and test SPARQL queries applied to the SPARQL endpoint of your choice. Further, you can visualize the results of your queries using the MGExplorer tool. The later is embedded in the queries management interface.
+    </p>
+
+    <h3>Usage</h3>
+    <p>
+        This website contains three pages dedicated to domain users:
+        <ul>
+            <li><b>Home - CovidOnTheWeb:</b> <a href="http://covid19.i3s.unice.fr:8080">http://covid19.i3s.unice.fr:8080</a> <br>
+                Used to visualize the results of queries applied to the CovidOnTheWeb SPARQL endpoint 
+            </li>
+            <li>
+                <b>MGExplorer:</b> <a href="http://covid19.i3s.unice.fr:8080/LDExplorer">http://covid19.i3s.unice.fr:8080/LDExplorer</a> <br>
+                Allows to visualize the results of predefined queries using follow up queries. These are defined via dedicated pages (described below).
+            </li>
+            <li>
+                <b>ARViz:</b> <a href="http://covid19.i3s.unice.fr:8080/arviz">http://covid19.i3s.unice.fr:8080/arviz</a> <br>
+                This page presents a visualization interface to assist the visual exploration of association rules extracted from the CovidOnTheWeb RDF graph.
+            </li>
+        </ul>
+
+        The website offers yet three dedicated pages for generating, debugging and testing SPARQL queries:
+        <ul>
+            <li>
+                <b>Covid:</b> <a href="http://covid19.i3s.unice.fr:8080/covid">http://covid19.i3s.unice.fr:8080/covid</a> <br>
+                Used by advanced users to generate, test and publish SPARQL queries. This page is dedicated to the CovidOnTheWeb RDF graph (SPARQL endpoint: <a href="https://covidontheweb.inria.fr/sparql">https://covidontheweb.inria.fr/sparql</a>).
+            </li>
+            <li>
+                <b>Hal:</b> <a href="http://covid19.i3s.unice.fr:8080/hal">http://covid19.i3s.unice.fr:8080/hal</a> <br>
+                Used by advanced users to generate and test SPARQL queries. This page is dedicated to the HAL RDF graph (SPARQL endpoint: <a href="http://sparql.archives-ouvertes.fr/sparql">http://sparql.archives-ouvertes.fr/sparql</a>). 
+            </li>
+            <li>
+                <b>LDViz:</b> <a href="http://covid19.i3s.unice.fr:8080/ldviz">http://covid19.i3s.unice.fr:8080/ldviz</a> <br>
+                Used by advanced users to generate and test SPARQL queries applied to any SPARQL endpoint. 
+            </li>
+        </ul>
+    </p>
+
+    <h3>Related Publications</h3>
+    <ul>
+        <li>Franck Michel, Fabien Gandon, Valentin Ah-Kane, Anna Bobasheva, Elena Cabrio, et al.. Covid-on-the-Web: Knowledge Graph and Services to Advance COVID-19 Research. ISWC 2020 - 19th International Semantic Web Conference, Nov 2020, Athens / Virtual, Greece. ⟨10.1007/978-3-030-62466-8_19⟩. ⟨hal-02939363⟩</li>
+        <li>Franck Michel, Fabien Gandon, Valentin Ah-Kane, Anna Bobasheva, Elena Cabrio, et al.. Covid-on-the-Web: Graphe de Connaissances et Services pour faire Progresser la Recherche sur la COVID-19. IC 2021 - 32es Journées francophones d'Ingénierie des Connaissances (32st French Knowledge Engineering Conference), Maxime Lefrançois, Jun 2021, Bordeaux, France. pp.1-9. ⟨hal-03230741⟩</li>
+        <li>Aline Menin, Franck Michel, Fabien Gandon, Raphaël Gazzotti, Elena Cabrio, et al.. Covid-on-the-Web: Exploring the COVID-19 Scientific Literature through Visualization of Linked Data from Entity and Argument Mining. Quantitative Science Studies, MIT Press Direct, 2021, ⟨10.1162/qss_a_00164⟩. ⟨hal-03404580⟩</li>
+        <li>Aline Menin, Catherine Faron Zucker, Olivier Corby, Carla Dal Sasso Freitas, Fabien Gandon, et al.. From Linked Data Querying to Visual Search: Towards a Visualization Pipeline for LOD Exploration. International Conference on Web Information Systems and Technologies (WEBIST), Oct 2021, Online Streaming, France. ⟨10.5220/0010654600003058⟩. ⟨hal-03404572⟩</li>
+        <li>Aline Menin, Ricardo Cava, Carla Dal Sasso Freitas, Olivier Corby, Marco Winckler. Towards a Visual Approach for Representing Analytical Provenance in Exploration Processes. IV 2021 - 25th International Conference Information Visualisation, Jul 2021, Melbourne / Virtual, Australia. ⟨10.1109/IV53921.2021.00014⟩. ⟨hal-03292172⟩</li>
+        <li>Lucie Cadorel, Andrea G. B. Tettamanzi. Mining RDF Data of COVID-19 Scientific Literature for Interesting Association Rules. WI-IAT'20 - IEEE/WIC/ACM International Joint Conference on Web Intelligence and Intelligent Agent Technology, Dec 2020, Melbourne, Australia. ⟨hal-03084029⟩</li>
+        <li>Aline Menin, Lucie Cadorel, Andrea G. B. Tettamanzi, Alain Giboin, Fabien Gandon, et al.. ARViz: Interactive Visualization of Association Rules for RDF Data Exploration. IV 2021 - 25th International Conference Information Visualisation, Jul 2021, Melbourne / Virtual, Australia. ⟨10.1109/IV53921.2021.00013⟩. ⟨hal-03292140⟩</li>
+    </ul>
+
+    <div>
+        <h3>People involved in the project:</h3>
+        <ul class="people">
+            <li><a href="mailto:fabien.gandon@inria.fr">Fabien Gandon</a>, DR INRIA, Head of WIMMICS Team</li>
+            <li><a href="mailto:olivier.corby@inria.fr">Olivier Corby</a>, CR INRIA</li>
+            <li><a href="mailto:marco.winckler@unice.fr">Marco Winckler</a>, Prof. Université Cote d'Azur</li>
+            <li><a href="mailto:valentin.ah-kane@inria.fr">Valentin Ah-Kane</a>, Intern Polytech</li>
+            <li><a href="mailto:franck.michel@cnrs.fr">Franck Michel</a>, CR CNRS</li>
+            <li><a href="mailto:mathieu.simon@inria.fr">Mathieu Simon</a>, IR INRIA</li>
+            <li><a href="mailto:alain.gibouin@inria.fr">Alain Giboin</a>, Emeritous CR INRIA</li>
+            <li><a href="mailto:raphael.gazzotti@inria.fr">Raphaël Gazzotti</a>, post-doc INRIA</li>
+            <li><a href="mailto:aline.menin@inria.fr">Aline Menin</a>, post-doc INRIA</li>
+        </ul>
+    </div>
+
+    <footer>
+        <p class="f3">
+            <a href="/">Home</a>
+        </p>
+    </footer>
+</body>
+
+</html>

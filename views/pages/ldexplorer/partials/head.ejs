@@ -1,0 +1,30 @@
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0" />
+
+<link rel="stylesheet" type="text/css" href="/assets/fontawesome/css/all.css">
+<script type="module" src="/build/my-component.esm.js"></script>
+
+<!-- <link rel="icon" href="/assets/images/favicon.ico" type="image/x-icon" /> -->
+<link rel="stylesheet" type="text/css" href="/assets/css/common.css" />
+<!-- <link rel="stylesheet" type="text/css" href="/assets/css/query.css" /> -->
+<script nomodule src="/build/my-component.js"></script>
+
+<meta charset="UTF-8">
+<title>MGExplorer</title>
+<script type="text/javascript" src="https://d3js.org/d3.v6.min.js"></script>
+
+<link rel="stylesheet" type="text/css" href="/build/my-component.css" media="all" />
+<script>
+    const protocol = window.location.protocol + '//';
+        const hostname = window.location.host;
+        let page = "ldexplorer";
+
+
+        function login() {
+            location.href = protocol + hostname + '/' + page + '/login';
+        }
+
+        function logout() {
+            location.href = protocol + hostname + '/' + page + '/logout';
+        }
+</script>

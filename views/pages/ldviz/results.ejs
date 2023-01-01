@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <%- include("./partials/head") %>
+        <title>Query Results</title>
+    </head>
+
+    <body>
+        <div id="titleDiv">
+            <!-- the title goes below -->
+            <h1></h1> 
+            <p><a href='https://team.inria.fr/wimmics/'>Wimmics team</a> Inria, I3S, UCA, CNRS.</p> 
+        </div>
+
+        <div class='resultsViewer'>
+        <button class='resultsDownloadButton' id='results-download'>Download File</button>
+        <pre id="json-renderer"></pre>
+        <div id="html-renderer"></div>
+        </div>
+
+        <script>
+            setGlobalParameters(<%- JSON.stringify(locals) %>)
+            d3.select('#titleDiv').select('h1')
+                .text(globalParams.type.charAt(0).toUpperCase() + globalParams.type.slice(1) + ' Results' + (globalParams.queryData.name ? ' of query "' + globalParams.queryData.name + '"' : ''))
+
+            globalParams.queryData.query = globalParams.queryData.query.replace(/\\n/g, "\n").replace(/\\"/g, '\"')
+           
+            sendRequest(globalParams.queryData)
+
+            d3.select('body').append('i').classed("fas fa-spinner fa-spin fa-2x loading", true).style('margin-left', '49%')
+
+        </script>
+    </body>
+
+</html>

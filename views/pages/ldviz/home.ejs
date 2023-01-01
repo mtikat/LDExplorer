@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("./partials/head") %>
+    <%- include("./partials/headMGExplorer") %>
+    <title>Covid Linked Data Visualizer</title>
+</head>
+
+<body>
+    <div class="header">
+        <h1>Covid Linked Data Visualizer</h1>
+        <p class="summary">The goal of this application is to support the analysis and exploration of scientific
+        publications about the Covid-19.<br />
+        The data used in the visualization below come from the endpoint <a href="http://covidontheweb.inria.fr/sparql"
+        target="_blank">https://covidontheweb.inria.fr/sparql</a></p>
+        <%- include("./partials/header") %>
+    </div>
+
+    <div class="body">
+        <div id="queryArea">
+            <h4>Query Covid Knowledge Graph</h4>
+            <div class="queryconf">
+                <p>Start by selecting a predefined query from the combo box below. To explore the data, click-right over
+                    the elements of the graph and select a visualization.</p>
+                <label>Select a query: </label>
+                <select id="queryselect">
+                    <!-- <% for(var i=0; i < queries.length; i++) { %>
+                    <option value="<%= i %>" <%= (i == 0) ? "selected" : "" %>><%= queries[i].name %></option>
+                    <% } %> -->
+                </select>
+                <i class="fa fa-arrow-circle-right load-graphs" onClick="processQuery()"></i>
+            </div>
+        </div>
+
+        <!-- Node color defined in public/MG-Explorer/nodeEdge/js/nodeEdgeChart.js -->
+        <p id="legend" hidden>
+            Legend:
+            <span class='red' id="first"></span>
+            <span class='blue' id="second"></span>
+            <span class='green'>both</span>
+        </p>
+
+        <div id="viewArea" style="top:auto" class="viewing">
+
+        </div>
+    </div>
+
+    <footer>
+        <p class="f1">
+            <a id="sparqlquery" href="#" onclick="exportSparql()" hidden>Export SPARQL query</a>
+        </p>
+        <p class="f1">
+            <a id="sparqlqueryresult" href="#" onclick="exportSparqlResult()" hidden>Export SPARQL query result</a>
+        </p>
+        <p class="f1">
+            <a id="result" href="#" onclick="saveResult()" hidden>Save result</a>
+        </p>
+        <!-- <p class="f2">
+            <a href="/covid" target="_blank">Advanced query</a>
+        </p> -->
+        <p class="f3">
+            <a href="/about">About</a>
+        </p>
+    </footer>
+
+    <script>
+        const queries = <%- JSON.stringify(queries) %>;
+        var sparqlQuery;
+        var queryValues;
+        var queryResult;
+
+        document.getElementById("viewArea").style.display = 'block';
+
+        /**
+         * Process SPARQL query
+         */
+        function processQuery() {
+            const selectedId = document.getElementById("queryselect").value;
+            const data = queries.filter(d => d.id == selectedId)[0];
+            showLoading();
+            tune(data)
+            sendRequest(data);
+        }
+
+        /**
+         * Hide legend and show loading
+         */
+        function showLoading() {
+            document.getElementById("legend").hidden = true;
+            document.getElementById("viewArea").innerHTML = `<i class="fas fa-spinner fa-spin fa-2x loading"></i>`;
+        }
+
+        /**
+         * Hide loading
+         */
+        function hideLoading() {
+            document.getElementById("viewArea").innerHTML = '';
+        }
+
+        /**
+         * Show request error
+         */
+        function showError() {
+            document.getElementById("viewArea").innerHTML = '<label>An error occurred, please try again later.</label>';
+        }
+
+        /**
+         * Executed in browser
+         * Send endpoint URI and SPARQL query to node server.js
+         * Get JSON result from transformation
+         * Apply graphic display
+        **/
+        function sendRequest(values) {
+            
+            let url = protocol + hostname + "/sparql"
+
+            const data = {
+                'query': values,
+                'dataset': 'covid'
+            }
+
+            fetch(url, {
+                method: 'POST',
+                body: JSON.stringify(data)
+            }).then(response => {
+                return response.text();
+            }).then(text => {
+                if (text.startsWith('Virtuoso')) {
+                    // Syntax error message
+                    showError();
+                    window.alert(text);
+                } else if (text.startsWith('<')) {
+                    const html = new DOMParser().parseFromString(text, 'text/html').body.childNodes[0]
+                    alert(html.textContent)
+                } else {
+                    getResult(text, values);                     
+                }
+                
+            }).catch(error => {
+                console.log(error);
+                showError();
+            });
+        }
+
+        /**
+         * Manage result and apply graphic display
+         */
+        function getResult(data, values) {
+            // Save data to allow export
+            sparqlQuery = values.query;
+            queryResult = JSON.parse(data);
+            queryValues = values;
+            let transdata = JSON.stringify(queryResult[1]);
+            if (queryResult[0].results.bindings.length > 0) {
+                graphicDisplay(transdata, values);
+                // legend(values.legend);
+                document.getElementById("sparqlqueryresult").hidden = false;
+                document.getElementById("sparqlquery").hidden = false;
+                document.getElementById("result").hidden = false;
+            } else {
+                document.getElementById("sparqlqueryresult").hidden = true;
+                document.getElementById("sparqlquery").hidden = true;
+                document.getElementById("result").hidden = true;
+                window.alert(getMessage(values.type));
+            }
+        }
+
+        /**
+         * Display legend
+         */
+        function legend(legend) {
+            if (legend) {
+                var labels = legend.split("--");
+                document.getElementById("first").innerHTML = labels[0];
+                document.getElementById("second").innerHTML = labels[1];
+                document.getElementById("legend").hidden = false;
+            }
+        }
+
+        /**
+         * Data is JSON format resulting from transformation, input for MGExplorer
+         * graphic display in ../public/MG-Explorer/MGExplorer/js/MGExplorer.js
+         */
+        function graphicDisplay(data, values) {
+            if (values.params.type == 1) {
+                launch(data, values.type, values.lab, "", values.stylesheetActive ? values.stylesheet : null);
+            }
+            else if (values.params.type == 2) {
+                launch(data, values.type, values.lab1, values.lab2, values.stylesheetActive ? values.stylesheet : null);
+            }
+            else if (values.params.type == 3) {
+                launch(data, values.type, values.lab, values.country, values.stylesheetActive ? values.stylesheet : null);
+            }
+        }
+
+        /**
+         * Message in case of failure, depending on query type
+         */
+        function getMessage(queryType) {
+            if (queryType == 2) {
+                return "No copublication results found between " + values.lab1 + " and " + values.lab2 + " from " + values.beginYear + " to " + values.endYear + ".";
+            }
+            else if (queryType == 3) {
+                return "No copublication results found between " + values.lab + " and " + values.country + " from " + values.beginYear + " to " + values.endYear + ".";
+            }
+            return "No copublication results found in " + values.lab + " from " + values.beginYear + " to " + values.endYear + ".";
+        }
+
+        /**
+         * Download SPARQL query
+         */
+        function exportSparql() {
+            // Use FileSaver.js lib - to download file: https://github.com/eligrey/FileSaver.js
+            var selectedQuery = document.getElementById("queryselect").value;
+            var content = sparqlQuery;
+            // any kind of extension (.txt,.cpp,.cs,.bat)
+            var filename = "sparqlquery_" + queryValues.id + ".rq";
+
+            download(content, filename)
+
+            // saveAs(blob, filename);
+        }
+
+        /**
+         * Download SPARQL query result
+         */
+        function exportSparqlResult() {
+            // Use FileSaver.js lib - to download file: https://github.com/eligrey/FileSaver.js
+            var content = JSON.stringify(queryResult[0], undefined, 4);
+            // any kind of extension (.txt,.cpp,.cs,.bat)
+            var filename = "sparqlqueryresult_" + queryValues.id + ".json";
+
+            // var blob = new Blob([content], {
+            //     type: "text/plain;charset=utf-8"
+            // });
+
+            download(content, filename)
+            // saveAs(blob, filename);
+        }
+
+        /**
+         * Save query data (values and result)
+         */
+        function saveResult() {
+            // Add current date to query values
+            queryValues.date = new Date();
+            // Use FileSaver.js lib - to download file: https://github.com/eligrey/FileSaver.js
+            var content = {};
+            content.values = queryValues;
+            content.result = queryResult;
+            // any kind of extension (.txt,.cpp,.cs,.bat)
+            var filename = "result_" + queryValues.id + ".json";
+
+            download(content, filename)
+
+            // var blob = new Blob([JSON.stringify(content)], {
+            //     type: "text/plain;charset=utf-8"
+            // });
+
+            // saveAs(blob, filename);
+        }
+
+        // populate list of queries
+        d3.select('select#queryselect')
+            .selectAll('option')
+            .data(queries.filter(d => d.isPublished))
+            .enter()
+                .append('option')
+                .text(d => d.name)
+                .attr('value', d => d.id)
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("./partials/head.ejs") %>
+    <title>ARViz</title>
+</head>
+
+<body>
+    <!-- left side buttons -- settings for the current data and visual tools -->
+    <div class='menu-buttons' >
+        <div class="menu-icon left-icon" id='legend_button'>
+            <span><i class="fas fa-palette"></i></span>
+        </div>
+        <div class="menu-icon left-icon" id='data-filter_button'>
+            <span><i class="fas fa-filter"></i></span>
+        </div>
+        <div class="menu-icon left-icon" id='data-sort_button'>
+            <span><i class="fas fa-sort"></i></span>
+        </div>
+        <div class="menu-icon left-icon" style='top: 20px;' id='about'>
+            <span><a href='/arviz'><i class="fas fa-info-circle"></i></a></span>
+        </div>
+    </div>
+
+    <!-- right side buttons -- information about the project and uploading new data for exploration -->
+    <!-- <div class='menu-buttons' style="float:right; top:-60px">
+        <div class="menu-icon right-icon" id='about'>
+            <span><a href="about"><i class="fas fa-info-circle"></i></a></span>
+        </div>
+        <div class="menu-icon right-icon" id='upload-file_button'>
+            <span><i class="fas fa-file-upload"></i></span>
+        </div>
+    </div> -->
+
+    <!-- divs activated by the buttons above -->
+    <div class='sideNav-bar' id='legend'></div>
+    <div class='sideNav-bar' id='data-filter'></div>
+    <div class='sideNav-bar' id='data-sort'></div>
+    <div class='sideNav-bar' id='upload-file'></div>
+
+    <div class='visu-space'>
+        <!-- tabs that enable switching between views -->
+        <div class="tab-bar" onclick="setScatterPlot();" id='scatterplot-tab'>Overview of Rules</div>
+        <div class="tab-bar" onclick="setChordDiagramView();" id='chord-tab'>Circular Paginated View of Subsets</div>
+        <div class="tab-bar" onclick="setGraphView();" id='graph-tab'>Exploratory Graph View of Items</div>
+
+        <!-- the div that will contain the views -->
+        <div class='viewContainer'></div>
+        
+        <!-- the forms below are only enabled for the association graph view -->
+        <div class='forms'>
+            <div class='left' id='antecedentSide'>
+                <div class='text-div'>Search by</div> 
+                <form autocomplete="off" onsubmit="handleInput(event)">
+                    <div class="autocomplete">
+                        <input id="antecedentInput" type="text" name="source" placeholder="Antecedent">
+                        <input type="submit" value="Go">
+                    </div>
+                </form>  
+            </div>
+            <div class='right' id='consequentSide'>
+                <div class='text-div'>Search by</div> 
+                <form autocomplete="off" onsubmit="handleInput(event)">
+                    <div class="autocomplete">
+                        <input id="consequentInput" type="text" name="target" placeholder="Consequent">
+                        <input type="submit" value="Go">
+                    </div>
+                </form>  
+            </div>
+        </div>
+        
+        <!-- the forms below are enabled together with the circular view -->
+        <div class="options">
+            <div class="rotationValueNav"></div>
+            <div class='bottom-button'>
+                <button onclick="setGraphView('all', null)">Display all terms</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const data = <%- JSON.stringify(data) %>; // the rules dataset
+
+        Object.keys(data).forEach(key => data[key] = JSON.parse(data[key]))
+
+        data.uri.forEach(d => {
+            if (d.label.includes('-'))
+                d.label = d.label.replaceAll('-', '')
+        })
+
+        console.log(data.rules)
+        console.log('articles', data.rules.filter(d => d.cluster_type == 'article'))
+        console.log('terms', data.rules.filter(d => d.cluster_type == 'label'))
+        console.log('both', data.rules.filter(d => d.cluster_type == 'label_article'))
+        console.log('nothing', data.rules.filter(d => d.cluster_type == 'none'))
+
+        // convert values from string to integers and booleans
+        data.rules.forEach((d,i) => {
+            d.interestingness = +d.interestingness;
+            d.confidence = +d.confidence;
+            d.isSymmetric = d.isSymmetric == 'True' ? true : false;
+            d.index = i;
+            d.source = d.source.map(e => e.trim())
+            d.target = d.target.map(e => e.trim())
+        })
+
+        // eliminate the duplicate symmetric rules
+        // there is no sense on displaying a symmetric rule twice
+        let symmetricItems = data.rules.filter(d => d.isSymmetric)
+
+        let validItems = []
+        symmetricItems.forEach((d,i) => {
+            if (!validItems.some(e => (e.source.equals(d.target) && e.target.equals(d.source)) || (e.source.equals(d.source) && e.target.equals(d.target))))
+                validItems.push(d)
+        })
+        
+        data.rules = data.rules.filter((d,i) => d.isSymmetric ? validItems.some(e => e.source.equals(d.source) && e.target.equals(d.target)) : true)
+
+        // handle the submit action from the graph view's forms
+        function handleInput(event){
+            event.preventDefault();
+            if (event.submitter.nodeName == 'BUTTON') return;
+            let type = event.srcElement[0].name;
+            let value = document.getElementById(event.srcElement[0].id).value;
+            if (value.length == 0) {
+                toast.fire({
+                    icon: 'error',
+                    title: 'You must enter a term'
+                })
+            }else
+                setGraphView(type, value)
+
+            if (type == 'source') document.getElementById('consequentInput').value = '';
+            else document.getElementById('antecedentInput').value = '';
+        }
+
+        const tooltip = d3.select('body').append('div')
+            .classed('tooltip', true)
+
+        // document.getElementById('about-url').href = protocol + hostname + '/arviz';
+        
+    </script>
+    <script type="text/javascript" src="../../arviz/js/configPanel.js"></script>
+    <script type="text/javascript" src="../../arviz/js/chordDiagram.js"></script>
+    <script type="text/javascript" src="../../arviz/js/scatterPlot.js"></script>
+    <script type="text/javascript" src="../../arviz/js/graphViz.js"></script>
+
+</body>
+</html>

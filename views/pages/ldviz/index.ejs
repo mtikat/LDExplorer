@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <%- include("./partials/head") %>
+        <%- include("./partials/headMGExplorer") %>
+        <title>Covid Linked Data Visualizer</title>
+    </head>
+
+    <body>
+        <%- include("./partials/basicQueryPage") %>
+    </body>
+
+</html>
+<script>
+
+    window.addEventListener('load', function() {
+
+        setGlobalParameters(<%- JSON.stringify(locals) %>)
+    
+        const gss = <%- JSON.stringify(stylesheet) %>;  
+        gss.appli.name = page;
+        d3.selectAll('#stylesheet').text(JSON.stringify(gss, undefined, 4))
+
+        const user = <%- JSON.stringify(user) %>;
+
+        const queryParams = "<%- JSON.stringify(locals.queryParams) %>"
+
+        if (queryParams && queryParams.query) {
+            if (user) {
+                const collapsibleButton = document.getElementById('query-button');
+                collapsibleButton.style.display = 'block';
+
+                document.forms['query_form'].query_content.value = queryParams.query.replace(/\\n/g, "\n").replace(/\\"/g, '\"');
+                if (queryParams.url) document.getElementById('form_sparqlEndpoint').value = queryParams.url;
+                if (queryParams.title) document.getElementById('form_queryTitle').value = queryParams.title;
+
+                processQuery(document.getElementById('query_form'))
+                updateFormMaxHeight()
+            } else alert(queryParams.message)
+        }
+        
+        initPage(<%- JSON.stringify(locals) %>, user ? user.email : null)
+        document.getElementById('newQueryDiv').onclick = function () { newQuery(user ? user.email : null) };
+
+        if (user && user.email) {
+            let loginButton = document.getElementById('login-button')
+            loginButton.innerHTML = 'Sign Out'
+            loginButton.onclick = function () { logout() }
+            document.getElementById('username').innerHTML = `Welcome ${user.name}`
+        }
+    })
+
+</script>
