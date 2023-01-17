@@ -100,9 +100,9 @@ export class MgeAnnotation {
                 "parents": [],
             }
             
-            //let annotype = this.element.querySelector("#annotation_format").getAttribute("value");
+            //let annotype = this.element.querySelector("#annotation_type").getAttribute("value");
             //let format = this.selectValueFormat;
-            //let type = this.selectValueType;
+            let type = this.selectValueType;
             let cat = this.selectValue;
             if (cat == 'dashboard') {
 
@@ -113,7 +113,7 @@ export class MgeAnnotation {
                 select(this.element.querySelector("#notedata")).attr('disabled', true);
                 state.formData = {
                     //"annotation-format": format,
-                    //"annotation-type": type,
+                    "annotation-type": type,
                     "type-connection": cat,
                     "connected-to": data,
                     "subset": state.savedData
@@ -225,7 +225,7 @@ export class MgeAnnotation {
                 });
                 state.formData = {
                     //"annotation-format": format,
-                    //"annotation-type": type,
+                    "annotation-type": type,
                     "type-connection": cat,
                     "connected-to": data,
                     "type-view": objtypes,
@@ -269,7 +269,7 @@ export class MgeAnnotation {
                 });
                 state.formData = {
                     //"annotation-format": format,
-                    //"annotation-type": type,
+                    "annotation-type": type,
                     "type-connection": cat,
                     "connected-to": data,
                     "subset": state.savedData,
@@ -314,7 +314,7 @@ export class MgeAnnotation {
 
             // state.formData = {
             //     //"annotation-format": format,
-            //     //"annotation-type": type,
+            //     "annotation-type": type,
             //     "type-connection": cat,
             //     "connected-to": data,
             //     "note": note,
@@ -331,7 +331,7 @@ export class MgeAnnotation {
 
         })
         this.selectValue = '--';
-        this.selectValueType = 'alert';
+        this.selectValueType = 'defect';
         this.selectValueFormat = 'text';
         this.element.querySelector("textarea")["value"] = "";
 
@@ -345,6 +345,8 @@ export class MgeAnnotation {
             let datas ={};
             let objtypes= [];
             let cat = this.selectValue;
+            let type = this.selectValueType;
+            datas["annotation-type"] = type;
             datas["id"] = this.element.id;
             datas["type-connection"] = cat;
             datas["user"] = state.user.name;
@@ -470,7 +472,7 @@ export class MgeAnnotation {
         select(this.element.querySelector("#resetAnnotationbtn")).on("click", () => {
             //console.log("reset form");
             this.selectValue = '--';
-            //this.selectValueType = 'alert';
+            this.selectValueType = 'defect';
             //this.selectValueFormat = 'text';
             this.element.querySelector("textarea")["value"] = "";
         })
@@ -619,17 +621,18 @@ export class MgeAnnotation {
                                                 <option value="marker" selected={this.selectValueFormat === 'marker'}>Marker</option>
                                             </select>
                                         </td>
-                                    </tr>
+                                    </tr> */}
                                     <tr>
-                                        <td > Type * </td>
+                                        <td > Intention * </td>
                                         <td >
                                             <select class="table_cell" id="form_type" onInput={(event) => this.handleSelectType(event)} name="annoation_type" style={{ width: this.width * 0.65 + "px" }}>
-                                                <option value="alert" selected={this.selectValueType === 'alert'}>Alert</option>
+                                                <option value="defect" selected={this.selectValueType === 'defect'}>Defect</option>
                                                 <option value="question" selected={this.selectValueType === 'question'}>Question</option>
-                                                <option value="information" selected={this.selectValueType === 'information'}>Information</option>
+                                                <option value="comment" selected={this.selectValueType === 'comment'}>Comment</option>
+                                                <option value="other" selected={this.selectValueType === 'other'}>Other</option>
                                             </select>
                                         </td>
-                                    </tr> */}
+                                    </tr>
                                     <tr>
                                         <td > Connect to * </td>
                                         <td >
