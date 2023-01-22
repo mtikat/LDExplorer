@@ -21,7 +21,7 @@
 | `_sameScale`       | `_same-scale`        | Indicates that the same scale should be used for all bars    | `boolean` | `false`     |
 | `_xClusterCenter`  | `_x-cluster-center`  | Coordinate x of the center of the cluster                    | `number`  | `0`         |
 | `_yClusterCenter`  | `_y-cluster-center`  | Coordinate y of the center of the cluster                    | `number`  | `0`         |
-| `datasetName`      | `dataset-name`       | The dataset name being used                                  | `string`  | `"[]"`      |
+| `datasetName`      | `dataset-name`       | The dataset name being used                                  | `string`  | `'[]'`      |
 | `height`           | `height`             | represents the height of the Cluster chart                   | `number`  | `350`       |
 | `width`            | `width`              | represents the width of the Cluster chart                    | `number`  | `350`       |
 

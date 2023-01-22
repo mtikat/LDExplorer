@@ -7,18 +7,18 @@
 
 ## Properties
 
-| Property       | Attribute       | Description                                       | Type                                          | Default                                |
-| -------------- | --------------- | ------------------------------------------------- | --------------------------------------------- | -------------------------------------- |
-| `_dashboard`   | `_dashboard`    | represents the current dashboard                  | `any`                                         | `undefined`                            |
-| `_view`        | `_view`         | represents the view includes this follow-up query | `any`                                         | `undefined`                            |
-| `cloneStatus`  | --              |                                                   | `{ isClone: boolean; isFirstTime: boolean; }` | `{isClone: false, isFirstTime: false}` |
-| `data`         | --              |                                                   | `any[]`                                       | `[]`                                   |
-| `form`         | `form`          |                                                   | `any`                                         | `null`                                 |
-| `globalParams` | `global-params` | Represents the panel associated with the graphic  | `any`                                         | `null`                                 |
-| `height`       | `height`        |                                                   | `number`                                      | `350`                                  |
-| `queriesList`  | `queries-list`  | List of predifined queries                        | `any`                                         | `null`                                 |
-| `query`        | `query`         | represents the current selected query             | `any`                                         | `undefined`                            |
-| `width`        | `width`         |                                                   | `number`                                      | `350`                                  |
+| Property       | Attribute       | Description                                       | Type                                          | Default                                  |
+| -------------- | --------------- | ------------------------------------------------- | --------------------------------------------- | ---------------------------------------- |
+| `_dashboard`   | `_dashboard`    | represents the current dashboard                  | `any`                                         | `undefined`                              |
+| `_view`        | `_view`         | represents the view includes this follow-up query | `any`                                         | `undefined`                              |
+| `cloneStatus`  | --              |                                                   | `{ isClone: boolean; isFirstTime: boolean; }` | `{ isClone: false, isFirstTime: false }` |
+| `data`         | --              |                                                   | `any[]`                                       | `[]`                                     |
+| `form`         | `form`          |                                                   | `any`                                         | `null`                                   |
+| `globalParams` | `global-params` | Represents the panel associated with the graphic  | `any`                                         | `null`                                   |
+| `height`       | `height`        |                                                   | `number`                                      | `350`                                    |
+| `queriesList`  | `queries-list`  | List of predifined queries                        | `any`                                         | `null`                                   |
+| `query`        | `query`         | represents the current selected query             | `any`                                         | `undefined`                              |
+| `width`        | `width`         |                                                   | `number`                                      | `350`                                    |
 
 
 ## Methods
@@ -79,7 +79,7 @@ Type: `Promise<void>`
 
 ### `setData(_: any, oldData: any) => Promise<any[]>`
 
-This function is to set the data to the selected data from parent 
+This function is to set the data to the selected data from parent
 If no arguments, It will return the value of data
 
 #### Returns

@@ -31,7 +31,7 @@
 | `_matrixWidth`      | `_matrix-width`       | Matrix area width (calculated)                                          | `number` | `0`               |
 | `_overviewScale`    | `_overview-scale`     | Scale is used to set the coordinates of the overview cursor             | `any`    | `scaleLinear()`   |
 | `_vOrder`           | `_v-order`            | Indirect ordering vector                                                | `any`    | `null`            |
-| `datasetName`       | `dataset-name`        | The dataset name being used                                             | `string` | `"[]"`            |
+| `datasetName`       | `dataset-name`        | The dataset name being used                                             | `string` | `'[]'`            |
 | `height`            | `height`              | represents the height of the matrix chart                               | `number` | `350`             |
 | `width`             | `width`               | represents the width of the matrix chart                                | `number` | `350`             |
 

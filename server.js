@@ -393,17 +393,15 @@ function update_file(path,data){
 
 
 app.get('/getAnnotation', function name(req,res) {
-    id = req.query["id"]
+    const query_id = req.query["query_id"];
     var path = "data/annotations/test.json";
     var file = fs.readFileSync(path, "utf8");
-    let data = []
     file = JSON.parse(file);
-    file.forEach(element => {
-        if (element.id == id){
-            console.log(element)
-            data =element
-        }
+    
+    const data = file.filter(element => {
+        return (element.query_id == query_id)
     }); 
+
     res.send(data)
 })
 

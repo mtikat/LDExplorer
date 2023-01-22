@@ -588,7 +588,7 @@ export class MgeView {
     div.append(this.typeVis).attr("dataset-name", this.datasetName)
                             .attr("id", this.idView)
                             .attr("id-dash", this.idDash)
-                            .attr("title-view", this.titleView);
+                            .attr("title-view", this.titleView)
     this._chart = this.element.shadowRoot.querySelector(this.typeVis)
 
   }
@@ -618,7 +618,7 @@ export class MgeView {
                   .style("overflow", "hidden");
     this.addTopContent();
     this.addChartContent(this._content);
-    if(this.typeVis != "mge-annotation") {
+    if(this.typeVis != "mge-annotation" && this.typeVis != "mge-view-annotation") {
       this.addSettingsContent();
     }
 

@@ -73,11 +73,12 @@ const { state } = createStore({
 	_id_parent:null,
 	selectedobj: null,
 	annotations: {},
+	viewAnnotation: {},
 	load_annotation:{},
 	saved_dashboard:{},
 	user: null,
 	all_data: {},
-
+    query_form_data: null, 
 });
 
 export default state;

@@ -265,6 +265,7 @@ export namespace Components {
           * type of visualization which want to create in inital point
          */
         "initComponent": string;
+        "loadAnnotation": (typeVis: string, objects: string[]) => Promise<void>;
         /**
           * This function is to refresh the status of the links and connection
          */
@@ -909,7 +910,7 @@ export namespace Components {
          */
         "setCloneData": (query: any) => Promise<void>;
         /**
-          * This function is to set the data to the selected data from parent  If no arguments, It will return the value of data
+          * This function is to set the data to the selected data from parent If no arguments, It will return the value of data
          */
         "setData": (_: any, oldData: any) => Promise<any[]>;
         /**
@@ -1045,6 +1046,8 @@ export namespace Components {
          */
         "y": number;
     }
+    interface MgeViewAnnotation {
+    }
     interface ObjectAnnotation {
         "height": number;
         "idAnnotation": string;
@@ -1148,6 +1151,12 @@ declare global {
         prototype: HTMLMgeViewElement;
         new (): HTMLMgeViewElement;
     };
+    interface HTMLMgeViewAnnotationElement extends Components.MgeViewAnnotation, HTMLStencilElement {
+    }
+    var HTMLMgeViewAnnotationElement: {
+        prototype: HTMLMgeViewAnnotationElement;
+        new (): HTMLMgeViewAnnotationElement;
+    };
     interface HTMLObjectAnnotationElement extends Components.ObjectAnnotation, HTMLStencilElement {
     }
     var HTMLObjectAnnotationElement: {
@@ -1181,6 +1190,7 @@ declare global {
         "mge-panel": HTMLMgePanelElement;
         "mge-query": HTMLMgeQueryElement;
         "mge-view": HTMLMgeViewElement;
+        "mge-view-annotation": HTMLMgeViewAnnotationElement;
         "object-annotation": HTMLObjectAnnotationElement;
         "query-annotation": HTMLQueryAnnotationElement;
         "view-annotation": HTMLViewAnnotationElement;
@@ -1877,6 +1887,8 @@ declare namespace LocalJSX {
          */
         "y"?: number;
     }
+    interface MgeViewAnnotation {
+    }
     interface ObjectAnnotation {
         "height"?: number;
         "idAnnotation"?: string;
@@ -1909,6 +1921,7 @@ declare namespace LocalJSX {
         "mge-panel": MgePanel;
         "mge-query": MgeQuery;
         "mge-view": MgeView;
+        "mge-view-annotation": MgeViewAnnotation;
         "object-annotation": ObjectAnnotation;
         "query-annotation": QueryAnnotation;
         "view-annotation": ViewAnnotation;
@@ -1932,6 +1945,7 @@ declare module "@stencil/core" {
             "mge-panel": LocalJSX.MgePanel & JSXBase.HTMLAttributes<HTMLMgePanelElement>;
             "mge-query": LocalJSX.MgeQuery & JSXBase.HTMLAttributes<HTMLMgeQueryElement>;
             "mge-view": LocalJSX.MgeView & JSXBase.HTMLAttributes<HTMLMgeViewElement>;
+            "mge-view-annotation": LocalJSX.MgeViewAnnotation & JSXBase.HTMLAttributes<HTMLMgeViewAnnotationElement>;
             "object-annotation": LocalJSX.ObjectAnnotation & JSXBase.HTMLAttributes<HTMLObjectAnnotationElement>;
             "query-annotation": LocalJSX.QueryAnnotation & JSXBase.HTMLAttributes<HTMLQueryAnnotationElement>;
             "view-annotation": LocalJSX.ViewAnnotation & JSXBase.HTMLAttributes<HTMLViewAnnotationElement>;

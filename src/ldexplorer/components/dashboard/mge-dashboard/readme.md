@@ -17,7 +17,7 @@
 | `_initView`        | `_init-view`        | First view of the dashboard. It depends on the value of initComponent to define what visualization technique or initial query is the first view to be initialized with. | `any`    | `undefined`   |
 | `_treeCharts`      | `_tree-charts`      | Stores the tree of connections between views                                                                                                                            | `any`    | `null`        |
 | `datasetName`      | `dataset-name`      | The dataset name being used                                                                                                                                             | `string` | `undefined`   |
-| `initComponent`    | `init-component`    | type of visualization which want to create in inital point                                                                                                              | `string` | `"mge-query"` |
+| `initComponent`    | `init-component`    | type of visualization which want to create in inital point                                                                                                              | `string` | `'mge-query'` |
 | `x`                | `x`                 | x-coordinate (The horizontal value in a pair of coordinates) of the dashboard                                                                                           | `number` | `0`           |
 | `y`                | `y`                 | y-coordinate (The vertical value in a pair of coordinates) of the dashboard                                                                                             | `number` | `0`           |
 
@@ -83,6 +83,16 @@ Type: `Promise<void>`
 #### Returns
 
 Type: `Promise<any>`
+
+
+
+### `loadAnnotation(typeVis: string, objects: string[]) => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
 
 
 

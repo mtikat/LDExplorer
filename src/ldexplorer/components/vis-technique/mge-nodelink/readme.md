@@ -13,7 +13,7 @@
 | `_nodeEdgeLegend` | `_node-edge-legend` | Represents the legend associated with the graphic | `any`    | `null`      |
 | `_nodeEdgePanel`  | `_node-edge-panel`  | Represents the panel associated with the graphic  | `any`    | `null`      |
 | `_view`           | `_view`             |                                                   | `any`    | `undefined` |
-| `datasetName`     | `dataset-name`      | The dataset name being used                       | `string` | `"[]"`      |
+| `datasetName`     | `dataset-name`      | The dataset name being used                       | `string` | `'[]'`      |
 | `height`          | `height`            | represents the height of the nodelinks chart      | `number` | `350`       |
 | `width`           | `width`             | represents the width of the nodelinks chart       | `number` | `350`       |
 
