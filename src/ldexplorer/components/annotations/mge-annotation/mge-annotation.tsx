@@ -104,7 +104,13 @@ export class MgeAnnotation {
             //let format = this.selectValueFormat;
             let type = this.selectValueType;
             let cat = this.selectValue;
-            if (cat == 'dashboard') {
+            if (cat == "--") {
+                state.formData = {
+                    "annotation-type": type,
+                    "type-connection": cat,
+                }
+            }
+            else if (cat == 'dashboard') {
 
                 let hiddens = this.element.querySelectorAll("input[type=hidden]");
                 hiddens.forEach(element => {
@@ -135,7 +141,7 @@ export class MgeAnnotation {
                 });
                 state.formData = {
                     //"annotation-format": format,
-                    //"annotation-type": type,
+                    "annotation-type": this.selectValueType,
                     "type-connection": cat,
                     "type-object": objtypes,
                     "title-view": titleview,
@@ -503,7 +509,6 @@ export class MgeAnnotation {
         state.annotations[this.element.id]["disabled"]= true;
     }
 
-
     getdate() {
         var today = new Date();
         var date = today.getDate() + "/" + (today.getMonth() + 1) + '/' + today.getFullYear();
@@ -511,13 +516,60 @@ export class MgeAnnotation {
         return date + ' ' + time;
     }
 
+    getViewTitle( data) {
+        switch(data['type-connection']) {
+            case "object":
+                return [data["title-view"]];
+            case "query":
+            case "view": 
+                return data ["connected-to"];
+            default: 
+                return undefined
+        }
+    }
+
+    getViewVisualTechnique(data) {
+        switch(data['type-connection']) {
+            case "object":
+                return data['type-view'];
+            case "view":
+                return data["type-view"][0]?.replace("mge-", "");
+            default:
+                return undefined
+        }
+    }
+
     async saveAnnotationContent(data) {
-        let page = null;
-        let url = this.protocol + this.hostname + "/saveAnnotation";
+        const payload = {
+          author: '633435c81d894ef5bc008b7d',
+          pageUrl: window.location.href,
+          body: data.note,
+          item:
+            data['type-connection'] === 'object'
+              ? data['connected-to'].map(item => ({
+                  objectType: 'node',
+                  objectValue: item,
+                  objectDescription: 'collaborator',
+                  info: {
+                    numChars: 0,
+                    startIndex: 0,
+                  },
+                }))
+              : undefined,
+          annotationType: data['annotation-type'],
+          connectionType: data['type-connection'],
+          agent: 'ldexplorer',
+          pathSequence: data['type-connection'] === 'dashboard' ? data['connected-to'] : undefined,
+          viewTitle: this.getViewTitle(data),
+          viewVisualTechnique: this.getViewVisualTechnique(data),
+        };
+        
+        const url = "http://localhost:9090/wisnote-api/annotations";
+
         fetch(url, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
+            headers: { 'Content-Type': 'application/json', "Authorization" : sessionStorage.getItem("jwt") },
+            body: JSON.stringify(payload)
         }).then(response => {
             console.log(response);
             //location.href = this.protocol + this.hostname + '/' + page;
