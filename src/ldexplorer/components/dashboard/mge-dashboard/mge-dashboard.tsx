@@ -714,8 +714,9 @@ view in the history panel (mge-history).
   @Method()
   async loadAnnotation(typeVis: string, objects: string[]) {
     const _svg = select(this.element.shadowRoot.querySelectorAll('.graph')[0]);
+    const url = "http://localhost:9090/wisnote-api/annotations"
     if (state.query_form_data.query_list) {
-      await fetch(window.location.protocol + '//' + window.location.host + '/getAnnotation?query_id=' + state.query_form_data.query_list, {
+      await fetch(url, {
         method: 'GET',
       })
         .then(response => {
@@ -724,21 +725,24 @@ view in the history panel (mge-history).
           }
         })
         .then(data =>
-          data.filter(d => {
-            return d['type-view'] === typeVis && d['connected-to'].join('') === objects.join('');
+          data.annotations.filter(d => {
+            if(d.connectionType !== "object" || d.agent !== "ldexplorer") return false;
+            
+            const items = d.item.map(it => it.objectValue);
+            return d['viewVisualTechnique'] === typeVis && items.join('') === objects.join('');
           }),
         )
         .then(dataArr => {
           dataArr.forEach(data => {
             // const chart = select(this.element.shadowRoot.querySelector(`mge-view[type-vis='mge-${typeVis}']`));
-            let idAnnotation = 'annotation-' + data.id;
+            let idAnnotation = 'annotation-' + data._id;
             this._annotationChart = _svg
               .append('mge-view')
               .attr('x', this.x + 600)
               .attr('y', this.y)
               .attr('type-vis', 'mge-annotation')
-              .attr('title-view', idAnnotation + ' by ' + data.user)
-              .attr('titleview', idAnnotation + ' by ' + data.user)
+              .attr('title-view', idAnnotation + ' by ' + data.author.name)
+              .attr('titleview', idAnnotation + ' by ' + data.author.name)
               .attr('id-view', idAnnotation);
             state.annotations[idAnnotation] = {
               disabled: true,
@@ -746,13 +750,13 @@ view in the history panel (mge-history).
             };
             state.load_annotation[idAnnotation] = {
               'disabled': true,
-              'type': data['type-connection'],
-              'data': data['connected-to'],
-              'note': data['note'],
-              'type-object': data['type-object'],
+              'type': data['connectionType'],
+              'data': data['item'].map(it => it.objectValue),
+              'note': data['body'],
+              'type-object': ["nodes"],
             };
-            if (data['type-connection'] == 'object') {
-              state.load_annotation[idAnnotation]['view'] = data['type-view'];
+            if (data['connectionType'] == 'object') {
+              state.load_annotation[idAnnotation]['view'] = data['viewVisualTechnique'];
             }
 
             // this.refreshLinks();
