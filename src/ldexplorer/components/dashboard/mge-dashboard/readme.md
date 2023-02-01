@@ -86,7 +86,7 @@ Type: `Promise<any>`
 
 
 
-### `loadAnnotation(typeVis: string, objects: string[]) => Promise<void>`
+### `loadAnnotation(objects: string[]) => Promise<void>`
 
 
 

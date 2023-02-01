@@ -265,7 +265,7 @@ export namespace Components {
           * type of visualization which want to create in inital point
          */
         "initComponent": string;
-        "loadAnnotation": (typeVis: string, objects: string[]) => Promise<void>;
+        "loadAnnotation": (objects: string[]) => Promise<void>;
         /**
           * This function is to refresh the status of the links and connection
          */

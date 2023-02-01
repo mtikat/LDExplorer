@@ -57,11 +57,10 @@ export class MgeViewAnnotation {
     const _dashboard = document.querySelector("mge-dashboard");
 
     select(this.element.querySelector('#showAnnotations')).on('click', () => {
-      const typeVis = select(this.element.querySelector("#vis_query")).node().value
       const objects = this.selected?.['nodes'] 
-      const stateTypeVis = state.typeChart[typeVis]
+      const links = this.selected?.['links']
 
-      _dashboard.loadAnnotation(stateTypeVis.replace("mge-", ""), objects)
+      _dashboard.loadAnnotation([...objects, ...links])
     });
     select(this.element.querySelector('#vis_query'))
       .selectAll('option')

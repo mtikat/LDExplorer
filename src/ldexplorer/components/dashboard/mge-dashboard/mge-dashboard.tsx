@@ -712,9 +712,9 @@ view in the history panel (mge-history).
   }
 
   @Method()
-  async loadAnnotation(typeVis: string, objects: string[]) {
+  async loadAnnotation(objects: string[]) {
     const _svg = select(this.element.shadowRoot.querySelectorAll('.graph')[0]);
-    const url = "http://localhost:9090/wisnote-api/annotations"
+    const url = 'http://localhost:9090/wisnote-api/annotations';
     if (state.query_form_data.query_list) {
       await fetch(url, {
         method: 'GET',
@@ -726,10 +726,10 @@ view in the history panel (mge-history).
         })
         .then(data =>
           data.annotations.filter(d => {
-            if(d.connectionType !== "object" || d.agent !== "ldexplorer") return false;
-            
+            if (d.connectionType !== 'object' || d.agent !== 'ldexplorer') return false;
+
             const items = d.item.map(it => it.objectValue);
-            return d['viewVisualTechnique'] === typeVis && items.join('') === objects.join('');
+            return items.join('') === objects.join('');
           }),
         )
         .then(dataArr => {
@@ -753,7 +753,7 @@ view in the history panel (mge-history).
               'type': data['connectionType'],
               'data': data['item'].map(it => it.objectValue),
               'note': data['body'],
-              'type-object': ["nodes"],
+              'type-object': ['nodes'],
             };
             if (data['connectionType'] == 'object') {
               state.load_annotation[idAnnotation]['view'] = data['viewVisualTechnique'];
