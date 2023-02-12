@@ -143,7 +143,7 @@ export class MgeListing {
   };
 
   getValue(value, data, title) {
-    if (value['data'] == '' || value['data'].view != 'listing') {
+    if (value['data'] == '' || value['data']?.view != 'listing') {
       value['data'] = {
         view: 'listing',
         date: '',
@@ -154,6 +154,7 @@ export class MgeListing {
       };
     }
 
+    value['data'].view = "listing"
     value['data'].titre = data.title;
     value['data'].date = data.date;
     value['data'].link = data.link;
@@ -167,8 +168,6 @@ export class MgeListing {
 
   @Event({ bubbles: true, composed: true }) testevent: EventEmitter;
   _onMouseClick(type, data) {
-    console.log('state listing' + state.annotations);
-    console.log(data);
     let title = select(document.querySelector('mge-dashboard').shadowRoot.querySelector("mge-view[id-view='" + this.element.id + "']"))['_groups'][0][0]['titleView'];
     state.viewAnnotation = this.getValue(state.viewAnnotation, data, title);
     Object.entries(state.annotations).forEach(([key, value]) => {
@@ -179,9 +178,6 @@ export class MgeListing {
       }
     });
     this.testevent.emit({ annotations: state.annotations, viewAnnotation: state.viewAnnotation });
-    console.log('after mouse click');
-    console.log(state.annotations);
-    console.log(event);
     this._send_id(this.element.id);
   }
 

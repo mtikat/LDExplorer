@@ -337,10 +337,10 @@ export class objectAnnotation {
                     <input type="hidden" name="objtype" value={item} />
                   ))}
                   <ul>
-                    {/* <li>
-                                            Date: {this.selected["date"]}
-                                            <input type="hidden" name="date" value={this.selected["date"]} />
-                                        </li> */}
+                    <li>
+                        Date: {this.selected["date"]}
+                        <input type="hidden" name="date" value={this.selected["date"]} />
+                    </li>
                     <li>
                       {this.selected['titre']}
                       <input type="hidden" name="title" value={this.selected['titre']} />
