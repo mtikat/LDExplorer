@@ -160,14 +160,6 @@ export class objectAnnotation {
             </td>
           </tr>
           <tr>
-            <td>Object type</td>
-            <td class="table_cell" style={{ width: this.width * 0.65 + 'px' }}>
-              <div class="annotation-note" contenteditable>
-                <textarea name="selectedvalues" id="selectedvalues" style={{ width: this.width * 0.65 + 'px' }}></textarea>
-              </div>
-            </td>
-          </tr>
-          <tr>
             <td>Note *</td>
             <td class="table_cell" style={{ width: this.width * 0.65 + 'px' }}>
               <div class="annotation-note" contenteditable>
@@ -337,10 +329,10 @@ export class objectAnnotation {
                     <input type="hidden" name="objtype" value={item} />
                   ))}
                   <ul>
-                    {/* <li>
-                                            Date: {this.selected["date"]}
-                                            <input type="hidden" name="date" value={this.selected["date"]} />
-                                        </li> */}
+                  <li>
+                        Date: {this.selected["date"]}
+                        <input type="hidden" name="date" value={this.selected["date"]} />
+                    </li>
                     <li>
                       {this.selected['titre']}
                       <input type="hidden" name="title" value={this.selected['titre']} />
