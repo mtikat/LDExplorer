@@ -81,7 +81,7 @@ export class viewAnnotation {
         let viewContent = (
             <div>
                 <table class="annotation_view table" id='annotation-view'>
-                    <tr>
+                    <tr id="viewlist">
                         <td >Views * </td>
                         <td class="table_cell" style={{ width: this.width * 0.65 + "px" }}>
                             <div >

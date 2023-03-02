@@ -353,14 +353,14 @@ export class objectAnnotation {
                 </div>
               </td>
             </tr>
-            <tr>
+            {/* <tr>
               <td>Selected value</td>
               <td class="table_cell" style={{ width: this.width * 0.65 + 'px' }}>
                 <div class="annotation-note" contenteditable>
                   <textarea name="selectedvalues" id="selectedvalues" style={{ width: this.width * 0.65 + 'px' }}></textarea>
                 </div>
               </td>
-            </tr>
+            </tr> */}
             <tr>
               <td>Note *</td>
               <td class="table_cell" style={{ width: this.width * 0.65 + 'px' }}>

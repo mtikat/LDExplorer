@@ -494,6 +494,8 @@ export class MgeAnnotation {
     disableForm() {
         //select(this.element.querySelector("#annotation_format")).attr('disabled', true);
         //select(this.element.querySelector("#form_type")).attr('disabled', true);
+        var dropdown = this.element.querySelector("#viewlist");
+        dropdown.remove();
         select(this.element.querySelector("#connection-types")).attr('disabled', true);
         select(this.element.querySelector("input[type='checkbox']")).attr('disabled', true);
         select(this.element.querySelector("#saveAnnotationbtn")).attr('disabled', true);
