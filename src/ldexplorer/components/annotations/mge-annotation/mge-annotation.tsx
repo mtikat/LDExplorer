@@ -310,7 +310,7 @@ export class MgeAnnotation {
             state.formData["id"] = newid;
             state.formData["user"] = state.user.name;
             state.formData["url"] = "http://covid19.i3s.unice.fr:8080/index.html?id-annotation=" + newid;
-            state.formData["query_id"] = state.query_form_data.query_list
+            state.formData["query_id"] = state.query_form_data?.query_list
 
             // state.formData = {
             //     //"annotation-format": format,
@@ -326,17 +326,14 @@ export class MgeAnnotation {
             this.disableForm();
             chart["data"]= state.formData
             console.log(chart);
-            state.all_data["data"].push(chart)
             this.idannotation = newid;
-
+            
+            state.all_data["data"].push(chart)
         })
         this.selectValue = '--';
         this.selectValueType = 'defect';
         this.selectValueFormat = 'text';
         this.element.querySelector("textarea")["value"] = "";
-
-        
-
     }
 
     exportAnnotation(){

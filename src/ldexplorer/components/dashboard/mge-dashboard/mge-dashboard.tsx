@@ -545,13 +545,16 @@ view in the history panel (mge-history).
 
   async addExport(_svg) {
     let _btnExport = select('#exportDashButton');
+    const _exportUrl = select("#exportUrl");
     _btnExport.on('click', (event, d) => {
       //console.log(state._historydata);
       var fileToSave = new Blob([JSON.stringify(state.all_data)], {
         type: 'application/json',
       });
       let url = this.protocol + this.hostname + '/saveDashboard';
-      let id = new Date().getTime();
+      // @ts-ignore
+      const dashboardId = state.all_data?.id;
+      const exportUrl = this.protocol + this.hostname + `/ldexplorer?id-dashboard=${dashboardId}`
 
       fetch(url, {
         method: 'POST',
@@ -560,6 +563,7 @@ view in the history panel (mge-history).
       })
         .then(response => {
           console.log(response);
+          _exportUrl.text(exportUrl).attr("href", exportUrl)
           //location.href = this.protocol + this.hostname + '/' + page;
         })
         .catch(error => {
@@ -678,6 +682,7 @@ view in the history panel (mge-history).
       //  parent2 = document.querySelectorAll("mge-dashboard")[0].shadowRoot.querySelectorAll("mge-view")
       console.log('parent test2');
       console.log(parent2);
+      state.all_data = {...state.all_data, data: data.data};
     }
   }
 
