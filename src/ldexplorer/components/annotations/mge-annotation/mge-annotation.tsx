@@ -181,7 +181,7 @@ export class MgeAnnotation {
                 }
                     
                 
-                rect.remove()
+                rect?.remove()
                 const that = this;
                 let parents = [];
                 let parent = this._dashboard.shadowRoot.querySelector("mge-view[id-view='" + this.idannotation + "']");
@@ -206,7 +206,7 @@ export class MgeAnnotation {
 
             } else if (cat == 'view') {
                 console.log("this is view")
-                rect.remove()
+                rect?.remove()
                 const that = this;
                 let checkboxes = this.element.querySelectorAll("input[type=checkbox]");
                 let parents = [];
@@ -248,7 +248,7 @@ export class MgeAnnotation {
                 //select(this.element.querySelectorAll("input[type='checkbox']")).attr('disabled', true);
             } else if (cat == 'query') {
                 
-                rect.remove()
+                rect?.remove()
                 const that = this;
                 let checkboxes = this.element.querySelectorAll("input[type=checkbox]");
                 let parents = [];
@@ -492,7 +492,7 @@ export class MgeAnnotation {
         //select(this.element.querySelector("#annotation_format")).attr('disabled', true);
         //select(this.element.querySelector("#form_type")).attr('disabled', true);
         var dropdown = this.element.querySelector("#viewlist");
-        dropdown.remove();
+        dropdown?.remove();
         select(this.element.querySelector("#connection-types")).attr('disabled', true);
         select(this.element.querySelector("input[type='checkbox']")).attr('disabled', true);
         select(this.element.querySelector("#saveAnnotationbtn")).attr('disabled', true);
