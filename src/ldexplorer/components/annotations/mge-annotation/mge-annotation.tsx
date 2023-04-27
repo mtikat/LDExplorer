@@ -510,13 +510,32 @@ export class MgeAnnotation {
         return date + ' ' + time;
     }
 
+    simpleStringify (object){
+        // stringify an object, avoiding circular structures
+        // https://stackoverflow.com/a/31557814
+        var simpleObject = {};
+        for (var prop in object ){
+            if (!object.hasOwnProperty(prop)){
+                continue;
+            }
+            if (typeof(object[prop]) == 'object'){
+                continue;
+            }
+            if (typeof(object[prop]) == 'function'){
+                continue;
+            }
+            simpleObject[prop] = object[prop];
+        }
+        return JSON.stringify(simpleObject); // returns cleaned up JSON
+    };
+
     async saveAnnotationContent(data) {
         let page = null;
         let url = this.protocol + this.hostname + "/saveAnnotation";
         fetch(url, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
+            body: this.simpleStringify(data)
         }).then(response => {
             console.log(response);
             //location.href = this.protocol + this.hostname + '/' + page;
