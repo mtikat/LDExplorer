@@ -107,8 +107,14 @@ const users = [
     { id: 4, name: 'Olivier', email: 'olivier.corby@ldviz.com', password: 'mdpolivier.06' },
     { id: 5, name: 'Quentin', email: 'quentin@gmail.com', password: 'mdpQuentin06' },
     { id: 6, name: 'Antoine', email: 'antoine@gmail.com', password: 'mdpAntoine06' },
-    { id: 6, name: 'Benjamin', email: 'benjamin@gmail.com', password: 'mdpBenjamin06' },
-    { id: 7, name: 'Franck', email: 'franck.michel@ldviz.com', password: 'mdpfranck.06' }
+    { id: 7, name: 'Benjamin', email: 'benjamin@gmail.com', password: 'mdpBenjamin06' },
+    { id: 8, name: 'Franck', email: 'franck.michel@ldviz.com', password: 'mdpfranck.06' },
+    { id: 9, name: 'Celian', email: 'celian@gmail.com', password: 'mdpCelian06' },
+    { id: 10, name: 'Molka', email: 'molka@gmail.com', password: 'mdpMolka06' },
+    { id: 11, name: 'Nadia', email: 'nadia@gmail.com', password: 'mdpNadia06' },
+    { id: 12, name: 'Anna', email: 'anna@gmail.com', password: 'mdpAnna06' },
+    { id: 12, name: 'maelys', email: 'maelys@gmail.com', password: 'mdpmaelys06' },
+    { id: 12, name: 'Jordan', email: 'jordan@gmail.com', password: 'mdpJordan06' }
 ]
 
 ////////////// login routes ///////////////////////////
