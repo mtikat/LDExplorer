@@ -3,6 +3,7 @@ import state from "../../../store"
 import { select, selectAll } from 'd3-selection'
 import Model from 'model-js';
 import { saveAs } from 'file-saver';
+import { stringify } from 'flatted';
 
 
 @Component({
@@ -321,11 +322,9 @@ export class MgeAnnotation {
             //     "time": this.getdate(),
             //     "id": new Date().getTime()
             // }
-            console.log(state.formData);
             this.saveAnnotationContent(state.formData);
             this.disableForm();
             chart["data"]= state.formData
-            console.log(chart);
             this.idannotation = newid;
             
             state.all_data["data"].push(chart)
@@ -510,24 +509,7 @@ export class MgeAnnotation {
         return date + ' ' + time;
     }
 
-    simpleStringify (object){
-        // stringify an object, avoiding circular structures
-        // https://stackoverflow.com/a/31557814
-        var simpleObject = {};
-        for (var prop in object ){
-            if (!object.hasOwnProperty(prop)){
-                continue;
-            }
-            if (typeof(object[prop]) == 'object'){
-                continue;
-            }
-            if (typeof(object[prop]) == 'function'){
-                continue;
-            }
-            simpleObject[prop] = object[prop];
-        }
-        return JSON.stringify(simpleObject); // returns cleaned up JSON
-    };
+    
 
     async saveAnnotationContent(data) {
         let page = null;
@@ -535,7 +517,7 @@ export class MgeAnnotation {
         fetch(url, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: this.simpleStringify(data)
+            body: stringify(data)
         }).then(response => {
             console.log(response);
             //location.href = this.protocol + this.hostname + '/' + page;

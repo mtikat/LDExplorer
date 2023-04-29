@@ -7,6 +7,7 @@ import { toPng, toSvg } from 'html-to-image';
 import Swal from 'sweetalert2';
 import { takeScreenshot, screenshotOptions } from '../../../utils/utils';
 import { saveAs } from 'file-saver';
+import { stringify } from 'flatted';
 
 @Component({
   tag: 'mge-dashboard',
@@ -545,25 +546,25 @@ view in the history panel (mge-history).
 
   async addExport(_svg) {
     let _btnExport = select('#exportDashButton');
-    const _exportUrl = select("#exportUrl");
+    const _exportUrl = select('#exportUrl');
     _btnExport.on('click', (event, d) => {
       //console.log(state._historydata);
-      var fileToSave = new Blob([JSON.stringify(state.all_data)], {
+      var fileToSave = new Blob([stringify(state.all_data)], {
         type: 'application/json',
       });
       let url = this.protocol + this.hostname + '/saveDashboard';
       // @ts-ignore
       const dashboardId = state.all_data?.id;
-      const exportUrl = this.protocol + this.hostname + `/ldexplorer?id-dashboard=${dashboardId}`
+      const exportUrl = this.protocol + this.hostname + `/ldexplorer?id-dashboard=${dashboardId}`;
 
       fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(state.all_data),
+        body: stringify(state.all_data),
       })
         .then(response => {
           console.log(response);
-          _exportUrl.text(exportUrl).attr("href", exportUrl)
+          _exportUrl.text(exportUrl).attr('href', exportUrl);
           //location.href = this.protocol + this.hostname + '/' + page;
         })
         .catch(error => {
@@ -669,6 +670,7 @@ view in the history panel (mge-history).
         });
     }
     if (data != null || data != []) {
+      console.log("data.data", data);
       let query = select(this.element.shadowRoot.querySelector("mge-view[type-vis='mge-query']").shadowRoot.querySelector('mge-query'));
       await query.node()._getResult(data.result, data.values, data.data[0].newQuery);
       setTimeout(() => {
@@ -682,7 +684,7 @@ view in the history panel (mge-history).
       //  parent2 = document.querySelectorAll("mge-dashboard")[0].shadowRoot.querySelectorAll("mge-view")
       console.log('parent test2');
       console.log(parent2);
-      state.all_data = {...state.all_data, data: data.data};
+      state.all_data = { ...state.all_data, data: data.data };
     }
   }
 
