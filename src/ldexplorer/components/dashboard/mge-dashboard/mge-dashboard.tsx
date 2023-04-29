@@ -651,7 +651,6 @@ view in the history panel (mge-history).
   }
 
   async loadDashboard(_svg) {
-    console.log(this.urlParams);
     let id_dashboard = this.urlParams.get('id-dashboard');
     let data = null;
     if (id_dashboard != undefined && id_dashboard != null) {
@@ -669,8 +668,9 @@ view in the history panel (mge-history).
           data = text;
         });
     }
-    if (data != null || data != []) {
-      console.log("data.data", data);
+    console.log(this.urlParams, id_dashboard, data);
+
+    if (data != null && data.lenght != 0) {
       let query = select(this.element.shadowRoot.querySelector("mge-view[type-vis='mge-query']").shadowRoot.querySelector('mge-query'));
       await query.node()._getResult(data.result, data.values, data.data[0].newQuery);
       setTimeout(() => {
