@@ -7,7 +7,7 @@ import { toPng, toSvg } from 'html-to-image';
 import Swal from 'sweetalert2';
 import { takeScreenshot, screenshotOptions } from '../../../utils/utils';
 import { saveAs } from 'file-saver';
-import { stringify } from 'flatted';
+import { parse, stringify } from 'flatted';
 
 @Component({
   tag: 'mge-dashboard',
@@ -654,23 +654,28 @@ view in the history panel (mge-history).
     let id_dashboard = this.urlParams.get('id-dashboard');
     let data = null;
     if (id_dashboard != undefined && id_dashboard != null) {
+      
       await fetch(window.location.protocol + '//' + window.location.host + '/getDashboard?id=' + id_dashboard, {
         method: 'GET',
       })
         .then(response => {
           if (response.ok) {
-            console.log(response.clone().json());
-            return response.clone().json();
+            return response.clone().text();
           }
         })
         .then(text => {
-          console.log(text);
-          data = text;
-        });
-    }
-    console.log(this.urlParams, id_dashboard, data);
+          // Use flatted.parse to transform the data
+          const transformedData = parse(text);
 
-    if (data != null && data.lenght != 0) {
+
+          // Do something with the transformed data
+          // For example, assign it to a variable
+          data = transformedData;
+        });
+
+    }
+
+    if (data != null && data.lenght !== 0) {
       let query = select(this.element.shadowRoot.querySelector("mge-view[type-vis='mge-query']").shadowRoot.querySelector('mge-query'));
       await query.node()._getResult(data.result, data.values, data.data[0].newQuery);
       setTimeout(() => {

@@ -509,8 +509,6 @@ export class MgeAnnotation {
         return date + ' ' + time;
     }
 
-    
-
     async saveAnnotationContent(data) {
         let page = null;
         let url = this.protocol + this.hostname + "/saveAnnotation";

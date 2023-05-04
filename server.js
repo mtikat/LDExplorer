@@ -19,6 +19,7 @@ const basicAuth = require('express-basic-auth');
 const isHTML = require('is-html');
 const { Session } = require('inspector');
 const path = require('path');
+const { parse, stringify } = require("flatted")
 // const stencil = require('./hydrate');
 
 // const fileUpload = require('express-fileupload');
@@ -28,6 +29,7 @@ const _ = require('lodash');
 
 const datafiletimeout = 1296000000; /// keep files in cache for 15 days
 const datadir = 'data/';
+
 
 // one cache folder per querying page
 const cachefile = {
@@ -359,14 +361,14 @@ app.post('/saveQuery', function (req, res) {
  app.post('/saveAnnotation', function (req, res) {
     var path = "data/annotations/test.json";
     var data = req.body; // query content
-    update_file(path,data);
+    update_circular_file(path,data);
     res.sendStatus(200);
  })
 
 app.post('/saveDashboard', function (req, res) {
     var path = "data/dashboard.json";
     var data = req.body; // query content
-    update_file(path, data);
+    update_circular_file(path, data);
     res.sendStatus(200);
 })
 
@@ -377,6 +379,31 @@ app.post('/saveDashboard', function (req, res) {
     update_file(path,data);
     res.sendStatus(200);
  })
+
+ function update_circular_file(path,data){
+    const jStringifiyData = JSON.stringify(data);
+    const fParsedData = parse(jStringifiyData);
+    var file = fs.readFileSync(path,"utf8");
+    let fParsedFile;
+
+    if(!file) {
+     fParsedFile = [fParsedData];   
+    } else {
+     fParsedFile = parse(file);
+     fParsedFile.push(fParsedData)
+    }
+   
+    fs.writeFileSync(path, stringify(fParsedFile), (err) => {
+        if (err)
+          console.log(err);
+        else {
+          console.log("File written successfully\n");
+          console.log("The written has the following contents:");
+          console.log(fs.readFileSync(path, "utf8"));
+        }
+    })
+}
+
 
 function update_file(path,data){
     var file = fs.readFileSync(path,"utf8");
@@ -399,7 +426,7 @@ app.get('/getAnnotation', function name(req,res) {
     const query_id = req.query["query_id"];
     var path = "data/annotations/test.json";
     var file = fs.readFileSync(path, "utf8");
-    file = JSON.parse(file);
+    file = parse(file);
     
     const data = file.filter(element => {
         return (element.query_id == query_id)
@@ -414,14 +441,13 @@ app.get('/getDashboard', function name(req, res) {
     var path = "data/dashboard.json";
     var file = fs.readFileSync(path, "utf8");
     let data = []
-    file = JSON.parse(file);
-    file.forEach(element => {
+    file = parse(file);
+    file.forEach((element) => {
         if (element.id == id) {
-            console.log(element)
             data = element
         }
     });
-    res.send(data)
+    res.send(stringify(data))
 })
 
 
