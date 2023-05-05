@@ -113,8 +113,11 @@ const users = [
     { id: 10, name: 'Molka', email: 'molka@gmail.com', password: 'mdpMolka06' },
     { id: 11, name: 'Nadia', email: 'nadia@gmail.com', password: 'mdpNadia06' },
     { id: 12, name: 'Anna', email: 'anna@gmail.com', password: 'mdpAnna06' },
-    { id: 12, name: 'maelys', email: 'maelys@gmail.com', password: 'mdpmaelys06' },
-    { id: 12, name: 'Jordan', email: 'jordan@gmail.com', password: 'mdpJordan06' }
+    { id: 13, name: 'maelys', email: 'maelys@gmail.com', password: 'mdpmaelys06' },
+    { id: 14, name: 'Jordan', email: 'jordan@gmail.com', password: 'mdpJordan06' },
+    { id: 15, name: 'Charlyn', email: 'charlyn@gmail.com', password: 'mdpCharlyn06' },
+    { id: 16, name: 'Wylie', email: 'wylie@gmail.com', password: 'mdpWylie06' },
+    { id: 17, name: 'Yunjing', email: 'yunjing@gmail.com', password: 'mdpYunjing06' },
 ]
 
 ////////////// login routes ///////////////////////////
